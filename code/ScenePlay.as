@@ -29,13 +29,14 @@
 			player.update(); // updates player for current frame
 			doCollisionDetection(); // does collision detection
 			KeyboardInput.update(); // updates the keyboard for the current frame
-			if (player.y > 450) {
+			
+			if (player.y > 450) { 
 				removeChild(player);
 				return new SceneLose(); // if the player falls off the stage return lose screen
 			}
 			if(player.x > 550){
 				removeChild(player);
-				return new SceneWin();
+				return new SceneWin(); // if player goes past this x position, they win!
 			}
 			
 		
