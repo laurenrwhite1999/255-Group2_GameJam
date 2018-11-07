@@ -33,6 +33,10 @@
 				removeChild(player);
 				return new SceneLose(); // if the player falls off the stage return lose screen
 			}
+			if(player.x > 550){
+				removeChild(player);
+				return new SceneWin();
+			}
 			
 		
 

@@ -18,7 +18,6 @@
 		/**
 		  * this is an overriden update function from the GameScene class, which is telling the current scene to chueck and update for 'this' in the current scene
 		  * this update function is looking for when the player presses entter on the keyboard
-		  * @param keyboard it is holding a KeyboardInput class instance inside the variable so that any keyboard inputs will be read in this scene
 		  */
 		override public function update():GameScene {
 			
