@@ -17,7 +17,7 @@
 			player.x = 300; // sets players x position
 			player.y = 225; // sets players y position
 			addChild(player); // adds player to scene
-
+			
 
 		} //end scene play
 
@@ -27,39 +27,43 @@
 		override public function update(): GameScene {
 
 			player.update(); // updates player for current frame
-			doCollisionDetection();	// does collision detection
+			doCollisionDetection(); // does collision detection
 			KeyboardInput.update(); // updates the keyboard for the current frame
-			if (player.y > 450) return new SceneLose(); // if the player falls off the stage return lose screen
+			if (player.y > 450) {
+				removeChild(player);
+				return new SceneLose(); // if the player falls off the stage return lose screen
+			}
+			
+		
+
+		return null; // return with nothing
+	}
+
+	/**
+	 * Prevents the player from moving through the platforms.
+	 */
+	private function doCollisionDetection(): void {
+		for (var i: int = 0; i < platforms.length; i++) {
+			if (player.collider.checkOverlap(platforms[i].collider)) {
+				// find the fix:
+				var fix: Point = player.collider.findOverlapFix(platforms[i].collider);
+
+				// apply the fix:
+				player.applyFix(fix);
+			}
+		} // ends the for() loop
+	} // ends the doCollisionDetection() function
 
 
-			return null; // return with nothing
-		}
-
-		/**
-		 * Prevents the player from moving through the platforms.
-		 */
-		private function doCollisionDetection(): void {
-			for (var i: int = 0; i < platforms.length; i++) {
-				if (player.collider.checkOverlap(platforms[i].collider)) {
-					// find the fix:
-					var fix: Point = player.collider.findOverlapFix(platforms[i].collider);
-
-					// apply the fix:
-					player.applyFix(fix);
-				}
-			} // ends the for() loop
-		} // ends the doCollisionDetection() function
-
-
-		/** this function handles adding event listeners to the scene */
-		override public function onBegin(): void {
-
-		}
-		/** this function handles remove event listeners to the scene */
-		override public function onEnd(): void {
-
-		}
+	/** this function handles adding event listeners to the scene */
+	override public function onBegin(): void {
 
 	}
+	/** this function handles remove event listeners to the scene */
+	override public function onEnd(): void {
+
+	}
+
+}
 
 }
