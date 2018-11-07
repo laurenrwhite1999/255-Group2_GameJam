@@ -55,6 +55,7 @@
 			doPhysics();
 
 			//detectGround();
+			detectTheWall();
 
 			collider.calcEdges(x, y);
 			isPlayerOnGround = false; // this allows us to walk off of edges and be in the air
@@ -137,6 +138,19 @@
 				velocity.y = 0;
 			}
 		} // ends the detectGround() function
+		
+		private function detectTheWall():void {
+			
+			var wall:Number = 30;
+			if(x < wall){
+				velocity.x = 0;
+				x = wall;
+				
+				
+			}
+			
+			
+		}
 
 		/**
 		 * Fixes the player in position if the player comes into contact with a
