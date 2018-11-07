@@ -1,34 +1,36 @@
 ﻿package code {
-
+	
 	import flash.utils.getTimer;
-
-	/**
-	 * The class for handling all game time.
-	 */
+	
+	/** this is the Time class */
 	public class Time {
 
-		/** How much time has passed since the previous frame. */
-		public static var dt: Number = 0;
-		/** A scaled version of deltaTime. Uses Time.Scale measured in milliseconds. */
-		public static var dtScaled: Number = 0;
-		/** The current frame's timestamp. How many milliseconds have passed since the game started. */
-		public static var time: Number = 0;
-		/** The timestamp of the previous frame, measured in milliseconds. */
-		private static var timePrev: Number = 0;
-
-		/** A scalar for dtScaled. Use this to creat slowmo effects or to pause the game. */
-		public static var scale: Number = 1;
-
-		/**
-		 * This method calculates deltaTime. It should be called once per frame from the game loop.
-		 */
-		public static function update(): void {
-			time = getTimer();
-			dt = (time - timePrev) / 1000;
-			dtScaled = dt * scale;
+		/** sets up a static delta time var, which static meaning there will only ever be one */
+		public static var dt:Number = 0; 
+		
+		/** sets up a static delta time scaled var, which static meaning there will only ever be one */
+		public static var dtScaled:Number = 0; 
+		
+		/** sets up a static current time var, which static meaning there will only ever be one */
+		public static var time:Number = 0; 
+		
+		/** sets up a static time scale-er var, which static meaning there will only ever be one */
+		public static var scale:Number = 1; 
+		
+		/* sets up a static previous time var, which static meaning there will only ever be one */
+		private static var timePrev:Number = 0; 
+		
+		
+		/** update function for the time class */
+		public static function update():void {
+			
+			time = getTimer(); // gets the current game time in millisec. and stores it in time
+			dt = (time - timePrev) / 1000; // caculates sec from millisec.
+			dtScaled = dt * scale; // calculates the scale of time
 			timePrev = time; // cache for next frame
-		} // ends the update() function
-
-	} // ends the Time class
-
-} // ends the package
+			
+		} // end update
+		
+	} // end class
+	
+}// end package

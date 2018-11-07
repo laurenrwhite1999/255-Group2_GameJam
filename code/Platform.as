@@ -19,7 +19,7 @@
 			collider.calcEdges(x, y);
 
 			// add to platforms array
-			Game.platforms.push(this);
+			ScenePlay.platforms.push(this);
 		} // ends the Platform() constructor
 
 	} // ends the Platform class

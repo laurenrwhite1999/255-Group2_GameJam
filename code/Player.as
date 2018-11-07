@@ -41,6 +41,7 @@
 		 */
 		public function Player() {
 			collider = new ColliderAABB(width / 2, height / 2);
+			
 		} // ends the Player() constuctor
 
 		/**
@@ -106,6 +107,7 @@
 		 */
 		private function doPhysics(): void {
 			var gravityMultiplier: Number = 1;
+			
 
 			if (!isJumping) gravityMultiplier = 2;
 
