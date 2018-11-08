@@ -5,13 +5,13 @@
 	import flash.events.Event;
 	
 	/** this is the game class which extends to the movie clip, which means it gives the movie clip its code */
-	public class game extends MovieClip {
+	public class Game extends MovieClip {
 		
 		/**	This stores the current scene using a FSM. */
 		private var gameScene:GameScene;
 
 		/** this is the game function, which really only handles scene switches due to the state machine set up */
-		public function game() {
+		public function Game() {
 			
 			switchScene(new SceneTitle()); // sets the current scene to the title scene	
 			
