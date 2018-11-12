@@ -10,7 +10,7 @@
 	public class Player extends MovieClip {
 
 		/** The gravity that is applied to the player as it falls. */
-		private var gravity: Point = new Point(0, 1000);
+		private var gravity: Point = new Point(0, 800);
 		/** The max speed that the player can move left or right. */
 		private var maxSpeed: Number = 200;
 		/** The velocity of the player. */
