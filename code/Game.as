@@ -19,6 +19,8 @@
 
 		/** The timer that keeps track of when to shake the camera. */
 		private var shakeTimer: Number = 0;
+		/** How much to multiply the shake intensity by. */
+		private var shakeMultiplier: Number = 20;
 
 		/**
 		 * This function sets up the keyboard input and adds the event listener
@@ -81,8 +83,12 @@
 				var shakeIntensity: Number = shakeTimer;
 				if (shakeIntensity > 1) shakeIntensity = 1;
 
+				shakeIntensity = 1 - shakeIntensity; // flip falloff curve
+				shakeIntensity *= shakeIntensity; // bend curve
+				shakeIntensity = 1 - shakeIntensity; // flip falloff curve
+
 				/** How much to shake the screen. */
-				var shakeAmount: Number = 20 * shakeIntensity;
+				var shakeAmount: Number = shakeMultiplier * shakeIntensity;
 
 				offsetX = Math.random() * shakeAmount - shakeAmount / 2;
 				offsetY = Math.random() * shakeAmount - shakeAmount / 2;
@@ -98,8 +104,9 @@
 		/**
 		 * This function determines when to shake the camera.
 		 */
-		private function shakeCamera(): void {
-			shakeTimer += .5;
+		private function shakeCamera(time: Number = .5, mult: Number = 20): void {
+			shakeTimer += time;
+			shakeMultiplier = mult;
 		} // ends the shakeCamera() function
 
 		/**
