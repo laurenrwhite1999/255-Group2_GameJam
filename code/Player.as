@@ -41,7 +41,7 @@
 		 */
 		public function Player() {
 			collider = new ColliderAABB(width / 2, height / 2);
-			
+
 		} // ends the Player() constuctor
 
 		/**
@@ -65,7 +65,11 @@
 		 * This function allows the player to walk left or right.
 		 */
 		private function handleWalking(): void {
+
 			if (KeyboardInput.isKeyDown(Keyboard.A)) velocity.x -= HORIZONTAL_ACCELERATION * Time.dt;
+
+
+
 			if (KeyboardInput.isKeyDown(Keyboard.D)) velocity.x += HORIZONTAL_ACCELERATION * Time.dt;
 
 			if (!KeyboardInput.isKeyDown(Keyboard.A) && !KeyboardInput.isKeyDown(Keyboard.D)) { // left and right not being pressed...
@@ -108,7 +112,7 @@
 		 */
 		private function doPhysics(): void {
 			var gravityMultiplier: Number = 1;
-			
+
 
 			if (!isJumping) gravityMultiplier = 2;
 
@@ -138,18 +142,18 @@
 				velocity.y = 0;
 			}
 		} // ends the detectGround() function
-		
-		private function detectTheWall():void {
-			
-			var wall:Number = 30;
-			if(x < wall){
+
+		private function detectTheWall(): void {
+
+			var wall: Number = 30;
+			if (x < wall) {
 				velocity.x = 0;
 				x = wall;
-				
-				
+
+
 			}
-			
-			
+
+
 		}
 
 		/**
