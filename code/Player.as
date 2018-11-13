@@ -10,7 +10,7 @@
 	public class Player extends MovieClip {
 
 		/** The gravity that is applied to the player as it falls. */
-		private var gravity: Point = new Point(0, 1000);
+		private var gravity: Point = new Point(0, 800);
 		/** The max speed that the player can move left or right. */
 		private var maxSpeed: Number = 200;
 		/** The velocity of the player. */
@@ -65,10 +65,10 @@
 		 * This function allows the player to walk left or right.
 		 */
 		private function handleWalking(): void {
-			if (KeyboardInput.isKeyDown(Keyboard.LEFT)) velocity.x -= HORIZONTAL_ACCELERATION * Time.dt;
-			if (KeyboardInput.isKeyDown(Keyboard.RIGHT)) velocity.x += HORIZONTAL_ACCELERATION * Time.dt;
+			if (KeyboardInput.isKeyDown(Keyboard.A)) velocity.x -= HORIZONTAL_ACCELERATION * Time.dt;
+			if (KeyboardInput.isKeyDown(Keyboard.D)) velocity.x += HORIZONTAL_ACCELERATION * Time.dt;
 
-			if (!KeyboardInput.isKeyDown(Keyboard.LEFT) && !KeyboardInput.isKeyDown(Keyboard.RIGHT)) { // left and right not being pressed...
+			if (!KeyboardInput.isKeyDown(Keyboard.A) && !KeyboardInput.isKeyDown(Keyboard.D)) { // left and right not being pressed...
 				if (velocity.x < 0) { // moving left
 					velocity.x += HORIZONTAL_DECELERATION * Time.dt; // accelerate right
 					if (velocity.x > 0) velocity.x = 0; // clamp at 0
