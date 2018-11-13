@@ -144,7 +144,7 @@
 		} // ends the detectGround() function
 
 		private function detectTheWall(): void {
-
+			/**
 			var wall: Number = 30;
 			if (x < wall) {
 				velocity.x = 0;
@@ -152,7 +152,7 @@
 
 
 			}
-
+			*/
 
 		}
 

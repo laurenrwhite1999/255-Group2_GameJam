@@ -50,7 +50,8 @@
 			
 
 			doCameraMove();
-
+			
+			
 			if (player.y > 550) {
 				level.removeChild(player);
 				return new SceneLose(); // if the player falls off the stage return lose screen
