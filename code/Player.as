@@ -10,7 +10,7 @@
 	public class Player extends MovieClip {
 
 		/** The gravity that is applied to the player as it falls. */
-		private var gravity: Point = new Point(0, 1000);
+		private var gravity: Point = new Point(0, 800);
 		/** The max speed that the player can move left or right. */
 		private var maxSpeed: Number = 200;
 		/** The velocity of the player. */
@@ -41,6 +41,7 @@
 		 */
 		public function Player() {
 			collider = new ColliderAABB(width / 2, height / 2);
+
 		} // ends the Player() constuctor
 
 		/**
@@ -54,6 +55,7 @@
 			doPhysics();
 
 			//detectGround();
+			detectTheWall();
 
 			collider.calcEdges(x, y);
 			isPlayerOnGround = false; // this allows us to walk off of edges and be in the air
@@ -63,10 +65,14 @@
 		 * This function allows the player to walk left or right.
 		 */
 		private function handleWalking(): void {
-			if (KeyboardInput.isKeyDown(Keyboard.LEFT)) velocity.x -= HORIZONTAL_ACCELERATION * Time.dt;
-			if (KeyboardInput.isKeyDown(Keyboard.RIGHT)) velocity.x += HORIZONTAL_ACCELERATION * Time.dt;
 
-			if (!KeyboardInput.isKeyDown(Keyboard.LEFT) && !KeyboardInput.isKeyDown(Keyboard.RIGHT)) { // left and right not being pressed...
+			if (KeyboardInput.isKeyDown(Keyboard.A)) velocity.x -= HORIZONTAL_ACCELERATION * Time.dt;
+
+
+
+			if (KeyboardInput.isKeyDown(Keyboard.D)) velocity.x += HORIZONTAL_ACCELERATION * Time.dt;
+
+			if (!KeyboardInput.isKeyDown(Keyboard.A) && !KeyboardInput.isKeyDown(Keyboard.D)) { // left and right not being pressed...
 				if (velocity.x < 0) { // moving left
 					velocity.x += HORIZONTAL_DECELERATION * Time.dt; // accelerate right
 					if (velocity.x > 0) velocity.x = 0; // clamp at 0
@@ -107,6 +113,7 @@
 		private function doPhysics(): void {
 			var gravityMultiplier: Number = 1;
 
+
 			if (!isJumping) gravityMultiplier = 2;
 
 			// apply gravity to velocity:
@@ -135,6 +142,19 @@
 				velocity.y = 0;
 			}
 		} // ends the detectGround() function
+
+		private function detectTheWall(): void {
+			/**
+			var wall: Number = 30;
+			if (x < wall) {
+				velocity.x = 0;
+				x = wall;
+
+
+			}
+			*/
+
+		}
 
 		/**
 		 * Fixes the player in position if the player comes into contact with a
