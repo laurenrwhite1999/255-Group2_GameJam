@@ -11,6 +11,8 @@
 
 		static public var platforms: Array = new Array(); // platforms array to hold
 		static public var collectables: Array = new Array(); // array to hold collectables
+		/** This array holds all of the enemies. */
+		private var enemies: Array = new Array();
 
 		public var player: Player = new Player(); // brings the player into the sceneplay
 		/**	This stores the current scene using a FSM. */
@@ -21,10 +23,12 @@
 		private var shakeTimer: Number = 0;
 		/** How much to multiply the shake intensity by. */
 		private var shakeMultiplier: Number = 20;
-		
-		public static var isItemOneSpawned:Boolean = false;
-		public static var isItemTwoSpawned:Boolean = false;
-		public static var isItemThreeSpawned:Boolean = false;
+		/** How much to delay the spawn of the next enemy. */
+		private var delayEnemySpawn: Number = 0;
+
+		public static var isItemOneSpawned: Boolean = false;
+		public static var isItemTwoSpawned: Boolean = false;
+		public static var isItemThreeSpawned: Boolean = false;
 
 
 
@@ -35,7 +39,7 @@
 			player.x = 0; // sets players x position
 			player.y = 0; // sets players y position
 			level.addChild(player); // adds player to scene
-			
+
 
 
 		} //end scene play
@@ -46,6 +50,8 @@
 		override public function update(): GameScene {
 
 			player.update(); // updates player for current frame
+			spawnEnemies(); // spawns the enemies
+			updateEnemies();
 			doCollisionDetection(); // does collision detection
 			KeyboardInput.update(); // updates the keyboard for the current frame
 
@@ -71,6 +77,36 @@
 		}
 
 		/**
+		 * This function spawns the enemies.
+		 */
+		public function spawnEnemies(): void {
+			if (delayEnemySpawn <= 0) {
+				var enemy: BasicEnemy = new BasicEnemy(200, 0);
+				level.addChild(enemy);
+				enemies.push(enemy);
+				delayEnemySpawn = 20;
+			}
+			delayEnemySpawn--;
+
+
+		} // ends the spawnEnemies() function
+
+		/**
+		 * This function updates each enemy in the array.
+		 */
+		public function updateEnemies(): void {
+			for (var i: int = enemies.length - 1; i >= 0; i--) {
+				enemies[i].update();
+				if (enemies[i].isDead) {
+					level.removeChild(enemies[i]);
+					enemies.splice(i, 1);
+				}
+			} // ends the for loop
+
+
+		} // ends the updateEnemies() function
+
+		/**
 		 * Prevents the player from moving through the platforms.
 		 */
 		private function doCollisionDetection(): void {
@@ -82,6 +118,19 @@
 					// apply the fix:
 					player.applyFix(fix);
 				}
+				for (var k: int = enemies.length-1; k >=0; k--) {
+					
+					if (enemies[k].collider.checkOverlap(platforms[i].collider)) {
+						// find the fix:
+						var enemyFix: Point = enemies[k].collider.findOverlapFix(platforms[i].collider);
+
+						// apply the fix:
+						enemies[k].applyEnemyFix(enemyFix);
+
+					}
+				} // ends the for loop updating enemies
+
+
 			} // ends the for() loop
 
 			for (var l: int = 0; l < collectables.length; l++) {
@@ -91,21 +140,19 @@
 					if (collectables[l].idNum == 3) {
 						trace("item three picked up");
 						collectables[l].isDead = true;
-					}
-					else if (collectables[l].idNum == 2) {
+					} else if (collectables[l].idNum == 2) {
 						trace("item two picked up");
 						collectables[l].isDead = true;
 
-					}
-					else if (collectables[l].idNum == 1) {
+					} else if (collectables[l].idNum == 1) {
 						trace("item one picked up");
 						collectables[l].isDead = true;
 					}
 
+
 				} // end if() statement
 
 			} // end collectables for() loop
-
 
 		} // ends the doCollisionDetection() function
 
@@ -116,7 +163,7 @@
 		}
 		/** this function handles remove event listeners to the scene */
 		override public function onEnd(): void {
-			
+
 			isItemOneSpawned = false;
 			isItemTwoSpawned = false;
 			isItemThreeSpawned = false;
@@ -188,9 +235,9 @@
 
 		private function updateCollect(): void {
 			for (var i: int = 0; i < collectables.length; i++) {
-				
+
 				if (collectables[i].isDead) {
-					
+
 					level.removeChild(collectables[i]);
 					collectables.splice(i, 1);
 				}
