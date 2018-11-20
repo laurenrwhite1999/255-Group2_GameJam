@@ -10,11 +10,9 @@
 	public class ScenePlay extends GameScene {
 
 		static public var platforms: Array = new Array(); // platforms array to hold
-		static public var trickPlatforms: Array = new Array();
-		public var trickDelay: Number = 2;
-		public var trickPlatTouched: Boolean = false;
+		static public var collectables: Array = new Array(); // array to hold collectables
+
 		public var player: Player = new Player(); // brings the player into the sceneplay
-		public var diss: DissPlat = new DissPlat();
 		/**	This stores the current scene using a FSM. */
 		private var gameScene: GameScene;
 		/** This is the level to load. */
@@ -23,6 +21,11 @@
 		private var shakeTimer: Number = 0;
 		/** How much to multiply the shake intensity by. */
 		private var shakeMultiplier: Number = 20;
+		
+		public static var isItemOneSpawned:Boolean = false;
+		public static var isItemTwoSpawned:Boolean = false;
+		public static var isItemThreeSpawned:Boolean = false;
+
 
 
 
@@ -33,8 +36,6 @@
 			player.y = 0; // sets players y position
 			level.addChild(player); // adds player to scene
 
-			//level.addChild(diss);
-			
 
 		} //end scene play
 
@@ -47,11 +48,10 @@
 			doCollisionDetection(); // does collision detection
 			KeyboardInput.update(); // updates the keyboard for the current frame
 
-			
-
 			doCameraMove();
-			
-			
+			updateCollect();
+
+
 			if (player.y > 550) {
 				level.removeChild(player);
 				return new SceneLose(); // if the player falls off the stage return lose screen
@@ -62,7 +62,7 @@
 				return new SceneWin(); // if player goes past this x position, they win!
 			}
 			*/
-			
+
 
 
 
@@ -83,31 +83,29 @@
 				}
 			} // ends the for() loop
 
-			/**
-			for (var j: int = 0; j < trickPlatforms.length; j++) {
-				if (player.collider.checkOverlap(trickPlatforms[j].collider)) {
-					// find the fix:
+			for (var l: int = 0; l < collectables.length; l++) {
 
-					var fix02: Point = player.collider.findOverlapFix(trickPlatforms[j].collider);
+				if (player.collider.checkOverlap(collectables[l].collider)) {
 
-					player.applyFix(fix02);
-					trickPlatTouched = true;
-					trickPlatforms[j].update(this);
-				}
-
-				if (trickPlatforms[j].isDead == true) {
-					trickDelay -= Time.dtScaled;
-					if (trickDelay <= 0) {
-						removeChild(trickPlatforms[j]);
-						trickPlatforms.splice(j, 1);
-						trickPlatTouched = false;
-						trickDelay = 4;
+					if (collectables[l].idNum == 3) {
+						trace("item three picked up");
+						collectables[l].isDead = true;
 					}
-				}
+					else if (collectables[l].idNum == 2) {
+						trace("item two picked up");
+						collectables[l].isDead = true;
+
+					}
+					else if (collectables[l].idNum == 1) {
+						trace("item one picked up");
+						collectables[l].isDead = true;
+					}
+
+				} // end if() statement
+
+			} // end collectables for() loop
 
 
-			} // ends the for() loop
-			*/
 		} // ends the doCollisionDetection() function
 
 
@@ -117,6 +115,10 @@
 		}
 		/** this function handles remove event listeners to the scene */
 		override public function onEnd(): void {
+			
+			isItemOneSpawned = false;
+			isItemTwoSpawned = false;
+			isItemThreeSpawned = false;
 
 		} // end OnEnd
 
@@ -182,6 +184,17 @@
 			shakeTimer += time;
 			shakeMultiplier = mult;
 		} // ends the shakeCamera() function
+
+		private function updateCollect(): void {
+			for (var i: int = 0; i < collectables.length; i++) {
+				
+				if (collectables[i].isDead) {
+					
+					level.removeChild(collectables[i]);
+					collectables.splice(i, 1);
+				}
+			}
+		}
 
 
 
