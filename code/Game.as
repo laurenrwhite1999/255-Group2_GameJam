@@ -48,6 +48,7 @@
 				gameScene = newScene; // current gameScene is then set to a newScene
 				addChild(gameScene); // the newScene(gameScene) is added to the scene
 				gameScene.onBegin(); // the onBegin function is then called in gameScene
+				stage.focus = stage;
 				
 			} // end if newScene statement
 			

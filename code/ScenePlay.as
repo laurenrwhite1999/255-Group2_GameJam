@@ -35,6 +35,7 @@
 			player.x = 0; // sets players x position
 			player.y = 0; // sets players y position
 			level.addChild(player); // adds player to scene
+			
 
 
 		} //end scene play
