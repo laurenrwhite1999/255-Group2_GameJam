@@ -15,7 +15,9 @@
 		private var basicEnemies: Array = new Array();
 		/** This array holds all of the ranged attack enemies. */
 		private var rangedEnemies: Array = new Array();
-
+		private var inventory: Array = new Array(); // this is the "inventory" of the player
+		static public var trickPlatforms: Array = new Array(); // platforms array to hold
+		
 		static public var player: Player = new Player(); // brings the player into the sceneplay
 		/**	This stores the current scene using a FSM. */
 		private var gameScene: GameScene;
@@ -28,6 +30,7 @@
 		/** How much to delay the spawn of the next enemy. */
 		private var delayEnemySpawn: Number = 0;
 
+		private var dissPlatTimer: Number = 20;
 
 		public static var isItemOneSpawned: Boolean = false;
 		public static var isItemTwoSpawned: Boolean = false;
@@ -66,12 +69,11 @@
 			spawnEnemies(); // spawns the enemies
 			updatePowerUps();
 			updateEnemies();
+			updateEverything();
 			doCollisionDetection(); // does collision detection
 			KeyboardInput.update(); // updates the keyboard for the current frame
 
 			doCameraMove();
-			updateCollect();
-
 
 			if (player.y > 550) {
 				level.removeChild(player);
@@ -268,18 +270,70 @@
 				if (player.collider.checkOverlap(collectables[l].collider)) {
 					if (collectables[l].idNum == 3) {
 						trace("item three picked up");
+						inventory.push(collectables[l]);
 						collectables[l].isDead = true;
+						trace(inventory[0]);
+						trace(inventory[1]);
+						trace(inventory[2]);
+
 					} else if (collectables[l].idNum == 2) {
 						trace("item two picked up");
+						inventory.push(collectables[l]);
 						collectables[l].isDead = true;
+						trace(inventory[0]);
+						trace(inventory[1]);
+						trace(inventory[2]);
+
 					} else if (collectables[l].idNum == 1) {
 						trace("item one picked up");
+						inventory.push(collectables[l]);
 						collectables[l].isDead = true;
+						trace(inventory[0]);
+						trace(inventory[1]);
+						trace(inventory[2]);
 					}
 
 				} // end if() statement
 
 			} // end collectables for() loop
+
+			for (var j: int = 0; j < trickPlatforms.length; j++) {
+
+				if (player.collider.checkOverlap(trickPlatforms[j].collider)) {
+					// find the fix:
+					fix = player.collider.findOverlapFix(trickPlatforms[j].collider);
+
+					// apply the fix:
+
+					player.applyFix(fix);
+
+					if (trickPlatforms[j].idNum == 3) {
+
+						trace("works3");
+
+					}
+					if (trickPlatforms[j].idNum == 2) {
+
+
+						//trickPlatforms[j].y += 5;
+						trace("works2");
+
+					}
+					if (trickPlatforms[j].idNum == 1) {
+
+						if (dissPlatTimer <= 0) {
+							trickPlatforms[j].isDead = true;
+							dissPlatTimer = 20;
+						}
+						dissPlatTimer--;
+
+						trace("works1");
+					}
+
+
+				}
+			}
+
 
 		} // ends the doCollisionDetection() function
 
@@ -294,6 +348,13 @@
 			isItemOneSpawned = false;
 			isItemTwoSpawned = false;
 			isItemThreeSpawned = false;
+
+			for (var j: int = trickPlatforms.length - 1; j >= 0; j--) {
+
+				level.removeChild(trickPlatforms[j]);
+				trickPlatforms.splice(j, 1);
+
+			}
 
 		} // end OnEnd
 
@@ -360,13 +421,19 @@
 			shakeMultiplier = mult;
 		} // ends the shakeCamera() function
 
-		private function updateCollect(): void {
+		private function updateEverything(): void {
 			for (var i: int = 0; i < collectables.length; i++) {
 
 				if (collectables[i].isDead) {
 
 					level.removeChild(collectables[i]);
 					collectables.splice(i, 1);
+				}
+			}
+			for (var j: int = trickPlatforms.length - 1; j >= 0; j--) {
+				if (trickPlatforms[j].isDead) {
+					level.removeChild(trickPlatforms[j]);
+					trickPlatforms.splice(j, 1);
 				}
 			}
 		}
