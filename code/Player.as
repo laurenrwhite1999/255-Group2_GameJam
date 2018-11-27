@@ -12,7 +12,7 @@
 		/** The gravity that is applied to the player as it falls. */
 		private var gravity: Point = new Point(0, 800);
 		/** The max speed that the player can move left or right. */
-		private var maxSpeed: Number = 200;
+		public var maxSpeed: Number = 200;
 		/** The velocity of the player. */
 		private var velocity: Point = new Point(1, 5);
 
@@ -29,7 +29,7 @@
 		/** The number of jumps the player has left. */
 		private var airJumpsLeft: int = 1;
 		/** The maximum number of jumps the player can have. */
-		private var airJumpsMax: int = 1;
+		public var airJumpsMax: int = 1;
 
 		/** The velocity value of the player's jump. */
 		private var jumpVelocity: Number = 400;
