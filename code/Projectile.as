@@ -17,6 +17,9 @@
 		
 		/** Determines whether or not the projectile should be removed from the stage. */
 		public var isDead: Boolean = false;
+		
+		/** The radius of the projectile. */
+		public var radius: Number = width / 2;
 
 		/**
 		 * This is the constructor code for the Projectile objects.

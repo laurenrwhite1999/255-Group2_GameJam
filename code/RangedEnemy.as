@@ -32,6 +32,10 @@
 				spawnProjectileDelay = Math.random() * 1.5 + .5;
 			}
 			
+			var dx: Number = ScenePlay.player.x - x;
+			var dy: Number = ScenePlay.player.y - y;
+			var angleToPlayer: Number = Math.atan2(dy, dx);
+			
 			updateProjectiles();
 			
 			if (this.y == 550 || this.x < (ScenePlay.player.x - 500)) isDead = true;
@@ -43,6 +47,7 @@
 		private function shootProjectiles(): void {
 			var proj: Projectile = new Projectile(this);
 			addChild(proj);
+			projectiles.push(proj);
 		} // ends the shootProjectiles() function
 		
 		/**
@@ -53,7 +58,7 @@
 				projectiles[i].update();
 				if(projectiles[i].isDead) {
 					removeChild(projectiles[i]);
-					projectiles.splice(i, 1);
+					projectiles.splice(i, i);
 				}
 			} // ends the for loop updating the projectiles
 		} // ends the updateProjectiles() function
