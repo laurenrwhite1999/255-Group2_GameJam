@@ -8,7 +8,7 @@
 	public class RangedEnemy extends Enemy {
 
 		/** This array holds all of the projectile objects. */
-		var projectiles: Array = new Array();
+		public var projectiles: Array = new Array();
 		
 		/** The amount of time (in seconds) to wait before spawning the next projectile. */
 		private var spawnProjectileDelay: Number = 0;

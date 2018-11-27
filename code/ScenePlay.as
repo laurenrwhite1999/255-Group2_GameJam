@@ -182,19 +182,86 @@
 					// apply the fix:
 					player.applyFix(fix);
 				}
-				for (var k: int = enemies.length-1; k >=0; k--) {
-					
-					if (enemies[k].collider.checkOverlap(platforms[i].collider)) {
+
+				for (var k: int = basicEnemies.length - 1; k >= 0; k--) {
+
+					if (basicEnemies[k].collider.checkOverlap(platforms[i].collider)) {
 						// find the fix:
-						var enemyFix: Point = enemies[k].collider.findOverlapFix(platforms[i].collider);
+						var enemyFix: Point = basicEnemies[k].collider.findOverlapFix(platforms[i].collider);
 
 						// apply the fix:
-						enemies[k].applyEnemyFix(enemyFix);
+						basicEnemies[k].applyEnemyFix(enemyFix);
 
 					}
 				} // ends the for loop updating enemies
 
+				for (var l: int = rangedEnemies.length - 1; l >= 0; l--) {
+					if (rangedEnemies[l].collider.checkOverlap(platforms[i].collider)) {
+						// find the fix:
+						var enemyFix: Point = rangedEnemies[l].collider.findOverlapFix(platforms[i].collider);
+						// apply the fix:
+						rangedEnemies[l].applyEnemyFix(enemyFix);
+					} //end if
+				} // ends the for loop updating enemies
 
+				for (var u: int = powerUpsArray.length - 1; u >= 0; u--) {
+					if (powerUpsArray[u].collider.checkOverlap(platforms[i].collider)) {
+						//find the fix
+						var powerUpFix: Point = powerUpsArray[u].collider.findOverlapFix(platforms[i].collider);
+						// apply fix
+						powerUpsArray[u].applyPowerUpFix(powerUpFix);
+					} // end if
+				} // end powerUpsArray for (check against Platforms);
+
+				for (var k: int = basicEnemies.length - 1; k >= 0; k--) {
+					/** this loop checks the power ups against the player collision */
+					for (var w: int = 0; w < powerUpsArray.length; w++) {
+						if (player.collider.checkOverlap(powerUpsArray[w].collider)) {
+							if (powerUpsArray[w].idNumber == 1) {
+								powerUpsArray[w].powerUp1Active = true;
+								powerUpsArray[w].powerUp2Active = false;
+								powerUpsArray[w].powerUp3Active = false;
+								powerUpsActiveTimer = 20;
+								powerUpsArray[w].isDead = true;
+							} // end if powerUp 1
+							if (powerUpsArray[w].idNumber == 2) {
+								powerUpsArray[w].powerUp1Active = false;
+								powerUpsArray[w].powerUp2Active = true;
+								powerUpsArray[w].powerUp3Active = false;
+								powerUpsArray[w].isDead = true;
+								powerUpsActiveTimer = 20;
+							} // end if powerUp 2
+							if (powerUpsArray[w].idNumber == 3) {
+								powerUpsArray[w].powerUp1Active = false;
+								powerUpsArray[w].powerUp2Active = false;
+								powerUpsArray[w].powerUp3Active = true;
+								powerUpsArray[w].isDead = true;
+								powerUpsActiveTimer = 20;
+							} // end if powerUp 3
+						} // end if player
+					} // end for loop powerups vs player
+					if (basicEnemies[k].collider.checkOverlap(platforms[i].collider)) {
+						// find the fix:
+						var enemyFix: Point = basicEnemies[k].collider.findOverlapFix(platforms[i].collider);
+
+						// apply the fix:
+						basicEnemies[k].applyEnemyFix(enemyFix);
+
+					}
+					if (basicEnemies[k].collider.checkOverlap(player.collider)) {
+						basicEnemies[k].isDead = true;
+					}
+				} // ends the for loop updating basic enemies
+
+				for (var l: int = rangedEnemies.length - 1; l >= 0; l--) {
+					if (rangedEnemies[l].collider.checkOverlap(platforms[i].collider)) {
+						var enemyFix: Point = rangedEnemies[l].collider.findOverlapFix(platforms[i].collider);
+						rangedEnemies[l].applyEnemyFix(enemyFix);
+					}
+				}
+				/*if (rangedEnemies[l].collider.checkOverlap(player.collider)) {
+					rangedEnemies[l].isDead = true;
+				}*/
 			} // ends the for() loop
 
 			for (var l: int = 0; l < collectables.length; l++) {
@@ -213,6 +280,13 @@
 				} // end if() statement
 
 			} // end collectables for() loop
+			
+			for (var proj: int = 0; proj < RangedEnemy.projectiles.length; proj++) {
+				if (player.collider.checkOverlap(RangedEnemy.projectiles[proj].radius)) {
+					projectiles[proj].isDead = true;
+					level.removeChild(pr
+				}
+			}
 
 		} // ends the doCollisionDetection() function
 
@@ -309,72 +383,3 @@
 	} // end class
 
 } // end package
-				}
-				} // end if
-				for (var k: int = enemies.length - 1; k >= 0; k--) {
-					if (enemies[k].collider.checkOverlap(platforms[i].collider)) {
-						// find the fix:
-						var enemyFix: Point = enemies[k].collider.findOverlapFix(platforms[i].collider);
-						// apply the fix:
-						enemies[k].applyEnemyFix(enemyFix);
-					} //end if
-				} // ends the for loop updating enemies
-				for (var u: int = powerUpsArray.length - 1; u >= 0; u--) {
-					if (powerUpsArray[u].collider.checkOverlap(platforms[i].collider)) {
-						//find the fix
-						var powerUpFix: Point = powerUpsArray[u].collider.findOverlapFix(platforms[i].collider);
-						// apply fix
-						powerUpsArray[u].applyPowerUpFix(powerUpFix);
-					} // end if
-				} // end powerUpsArray for (check against Platforms);
-			} // ends the for() loop platforms
-				for (var k: int = basicEnemies.length - 1; k >= 0; k--) {
-			/** this loop checks the power ups against the player collision */
-			for (var w: int = 0; w < powerUpsArray.length; w++) {
-				if (player.collider.checkOverlap(powerUpsArray[w].collider)) {
-					if (powerUpsArray[w].idNumber == 1) {
-						powerUpsArray[w].powerUp1Active = true;
-						powerUpsArray[w].powerUp2Active = false;
-						powerUpsArray[w].powerUp3Active = false;
-						powerUpsActiveTimer = 20;
-						powerUpsArray[w].isDead = true;
-					} // end if powerUp 1
-					if (powerUpsArray[w].idNumber == 2) {
-						powerUpsArray[w].powerUp1Active = false;
-						powerUpsArray[w].powerUp2Active = true;
-						powerUpsArray[w].powerUp3Active = false;
-						powerUpsArray[w].isDead = true;
-						powerUpsActiveTimer = 20;
-					} // end if powerUp 2
-					if (powerUpsArray[w].idNumber == 3) {
-						powerUpsArray[w].powerUp1Active = false;
-						powerUpsArray[w].powerUp2Active = false;
-						powerUpsArray[w].powerUp3Active = true;
-						powerUpsArray[w].isDead = true;
-						powerUpsActiveTimer = 20;
-					} // end if powerUp 3
-				} // end if player
-			} // end for loop powerups vs player
-					if (basicEnemies[k].collider.checkOverlap(platforms[i].collider)) {
-						// find the fix:
-						var enemyFix: Point = basicEnemies[k].collider.findOverlapFix(platforms[i].collider);
-
-						// apply the fix:
-						basicEnemies[k].applyEnemyFix(enemyFix);
-
-					}
-					if (basicEnemies[k].collider.checkOverlap(player.collider)) {
-						basicEnemies[k].isDead = true;
-					}
-				} // ends the for loop updating basic enemies
-
-				for (var l: int = rangedEnemies.length - 1; l >= 0; l--) {
-					if (rangedEnemies[l].collider.checkOverlap(platforms[i].collider)) {
-						var enemyFix: Point = rangedEnemies[l].collider.findOverlapFix(platforms[i].collider);
-						rangedEnemies[l].applyEnemyFix(enemyFix);
-					}
-				}
-				/*if (rangedEnemies[l].collider.checkOverlap(player.collider)) {
-					rangedEnemies[l].isDead = true;
-				}*/
-			} // ends the for() loop
