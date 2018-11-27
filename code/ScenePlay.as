@@ -114,7 +114,7 @@
 
 		public function spawnPowerUps(): void {
 			if (delayPowerUpsSpawn <= 0) {
-				var powerUp: PowerUps = new PowerUps(200,0)
+				var powerUp: PowerUps = new PowerUps(player.x, player.y)
 				level.addChild(powerUp);
 				powerUpsArray.push(powerUp);
 				delayPowerUpsSpawn = 100;

@@ -29,7 +29,7 @@
 		 * @param spawnX Where to spawn the PowerUps on the x axis.
 		 * @param spawnY Where to spawn the PowerUps on the y axis.
 		 */
-		public function powerUps(spawnX: Number, spawnY: Number) {
+		public function PowerUps(spawnX: Number, spawnY: Number) {
 			var spawnPowerUp: int = Math.random() * 3 + 1;
 			/**
 			 * Type 1.
