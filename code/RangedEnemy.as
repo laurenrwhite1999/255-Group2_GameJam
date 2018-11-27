@@ -7,6 +7,9 @@
 	 */
 	public class RangedEnemy extends Enemy {
 
+		/** This array holds all of the projectile objects. */
+		var projectiles: Array = new Array();
+		
 		/** The amount of time (in seconds) to wait before spawning the next projectile. */
 		private var spawnProjectileDelay: Number = 0;
 
@@ -28,11 +31,30 @@
 				shootProjectiles();
 				spawnProjectileDelay = Math.random() * 1.5 + .5;
 			}
+			
+			updateProjectiles();
 		} // ends the update() function
 
-		private function shootProjectiles(): void {
-			
+		/**
+		 * This function allows the ranged attack enemies to shoot projectiles at the player.
+		 */
+		private function shootProjectiles(p: Player = null): void {
+			var proj: Projectile = new Projectile(p, this);
+			ScenePlay.level.addChild(proj);
 		} // ends the shootProjectiles() function
+		
+		/**
+		 * This function updates the projectiles.
+		 */
+		private function updateProjectiles(): void {
+			for(var i = projectiles.length - 1; i >= 0; i--) {
+				projectiles[i].update();
+				if(projectiles[i].isDead) {
+					ScenePlay.level.removeChild(projectiles[i]);
+					projectiles.splice(i, 1);
+				}
+			} // ends the for loop updating the projectiles
+		} // ends the updateProjectiles() function
 
 	} // ends the RangedEnemy class
 

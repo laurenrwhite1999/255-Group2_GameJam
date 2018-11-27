@@ -20,7 +20,7 @@
 		/**	This stores the current scene using a FSM. */
 		private var gameScene: GameScene;
 		/** This is the level to load. */
-		private var level: MovieClip;
+		static public var level: MovieClip;
 		/** The timer that keeps track of when to shake the camera. */
 		private var shakeTimer: Number = 0;
 		/** How much to multiply the shake intensity by. */
@@ -85,7 +85,7 @@
 			if (delayEnemySpawn <= 0) {
 				var spawnLocation = Math.random() * stage.width + 1000;
 				var basicEnemy: BasicEnemy = new BasicEnemy(spawnLocation, 0);
-				var rangedEnemy: RangedEnemy = new RangedEnemy(spawnLocation, 0);
+				var rangedEnemy: RangedEnemy = new RangedEnemy(200, 0);
 
 				level.addChild(basicEnemy);
 				basicEnemies.push(basicEnemy);
