@@ -44,6 +44,8 @@
 		/** this is the scene play function */
 		public function ScenePlay() {
 			loadLevel();
+			var bgMusic: mainBGMusic = new mainBGMusic();
+			bgMusic.play();
 			player.x = 0; // sets players x position
 			player.y = 0; // sets players y position
 			level.addChild(player); // adds player to scene
@@ -152,7 +154,7 @@
 				trace("powerUpTimer: " + powerUpsActiveTimer);
 			} // end if
 		} // end powerUpTimer
-		
+
 		/**
 		 * Prevents the player from moving through the platforms.
 		 */
