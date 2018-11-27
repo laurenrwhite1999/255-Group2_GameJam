@@ -17,12 +17,12 @@
 		/**
 		 * This is the constructor code for the Projectile objects.
 		 */
-		public function Projectile(p: Player, rangedEnemy: RangedEnemy) {
+		public function Projectile(rangedEnemy: RangedEnemy) {
 			x = rangedEnemy.x;
 			y = rangedEnemy.y;
 			
-			var tx: Number = p.x - rangedEnemy.x;
-			var ty: Number = p.y - rangedEnemy.y;
+			var tx: Number = ScenePlay.player.x - rangedEnemy.x;
+			var ty: Number = ScenePlay.player.y - rangedEnemy.y;
 
 			var angle: Number = Math.atan2(ty,tx);
 			angle += (Math.random() * 20 + Math.random() * -20) * Math.PI / 180;

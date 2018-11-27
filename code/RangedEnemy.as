@@ -38,9 +38,9 @@
 		/**
 		 * This function allows the ranged attack enemies to shoot projectiles at the player.
 		 */
-		private function shootProjectiles(p: Player = null): void {
-			var proj: Projectile = new Projectile(p, this);
-			ScenePlay.level.addChild(proj);
+		private function shootProjectiles(): void {
+			var proj: Projectile = new Projectile(this);
+			addChild(proj);
 		} // ends the shootProjectiles() function
 		
 		/**
@@ -50,7 +50,7 @@
 			for(var i = projectiles.length - 1; i >= 0; i--) {
 				projectiles[i].update();
 				if(projectiles[i].isDead) {
-					ScenePlay.level.removeChild(projectiles[i]);
+					removeChild(projectiles[i]);
 					projectiles.splice(i, 1);
 				}
 			} // ends the for loop updating the projectiles

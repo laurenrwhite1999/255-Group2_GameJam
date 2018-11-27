@@ -112,7 +112,7 @@
 				}
 			} // ends the for loop updating the basic enemies
 
-			for (var j: int = rangedEnemies.length - 1; i >= 0; i--) {
+			for (var j: int = rangedEnemies.length - 1; j >= 0; j--) {
 				rangedEnemies[j].update();
 				if (rangedEnemies[j].isDead) {
 					level.removeChild(rangedEnemies[j]);
