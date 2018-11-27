@@ -280,13 +280,6 @@
 				} // end if() statement
 
 			} // end collectables for() loop
-			
-			for (var proj: int = 0; proj < RangedEnemy.projectiles.length; proj++) {
-				if (player.collider.checkOverlap(RangedEnemy.projectiles[proj].radius)) {
-					projectiles[proj].isDead = true;
-					level.removeChild(pr
-				}
-			}
 
 		} // ends the doCollisionDetection() function
 

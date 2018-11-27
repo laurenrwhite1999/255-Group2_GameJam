@@ -64,6 +64,7 @@
 		 * This function applies physics to the enemies.
 		 */
 		public function doPhysics(): void {
+			/** The amount of gravity to apply to the object. */
 			var gravityMultiplier: Number = 2;
 			velocity.y += gravity.y * Time.dt * gravityMultiplier;
 
