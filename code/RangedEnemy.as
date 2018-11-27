@@ -33,6 +33,8 @@
 			}
 			
 			updateProjectiles();
+			
+			if (this.y == 550 || this.x < ScenePlay.player.x) isDead = true;
 		} // ends the update() function
 
 		/**
