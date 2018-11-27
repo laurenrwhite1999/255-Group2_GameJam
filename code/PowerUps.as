@@ -104,15 +104,20 @@
 			if (powerUp1Active) {
 				//power up 1
 				player.airJumpsMax=3;
-			} // end if
-			if (powerUp2Active) {
+				} // end if
+			else if (powerUp2Active) {
 				//power up 2
-				player.airJumpsMax=3;
+				player.maxSpeed = 500;
 			} // end if
-			if (powerUp3Active) {
+			else if (powerUp3Active) {
 				//power up 3
-				player.airJumpsMax=3;
+				//player.airJumpsMax=3;
+				player.maxSpeed = 500;
 			} // end if
+			else {
+				player.airJumpsMax=1;
+				player.maxSpeed=200;
+			}// end else
 		} // end isPowerUpActive
 
 
