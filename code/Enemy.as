@@ -63,7 +63,7 @@
 		/**
 		 * This function applies physics to the enemies.
 		 */
-		private function doPhysics(): void {
+		public function doPhysics(): void {
 			var gravityMultiplier: Number = 2;
 			velocity.y += gravity.y * Time.dt * gravityMultiplier;
 

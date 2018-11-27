@@ -85,7 +85,7 @@
 			if (delayEnemySpawn <= 0) {
 				var spawnLocation = Math.random() * stage.width + 1000;
 				var basicEnemy: BasicEnemy = new BasicEnemy(spawnLocation, 0);
-				var rangedEnemy: RangedEnemy = new RangedEnemy(200, 0);
+				var rangedEnemy: RangedEnemy = new RangedEnemy(spawnLocation, 0);
 
 				level.addChild(basicEnemy);
 				basicEnemies.push(basicEnemy);

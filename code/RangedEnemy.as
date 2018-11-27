@@ -25,11 +25,15 @@
 		 * This function overrrides the update function to spawn projectiles.
 		 */
 		override public function update(): void {
+			super.doPhysics();
+			
+			super.collider.calcEdges(x, y);
+			
 			if (spawnProjectileDelay > 0) {
-				spawnProjectileDelay -= Time.dt;
+				spawnProjectileDelay --;
 			} else {
 				shootProjectiles();
-				spawnProjectileDelay = Math.random() * 1.5 + .5;
+				spawnProjectileDelay = Math.random() * 20 + 20;
 			}
 			
 			var dx: Number = ScenePlay.player.x - x;
@@ -40,13 +44,14 @@
 			
 			if (this.y == 550 || this.x < (ScenePlay.player.x - 500)) isDead = true;
 		} // ends the update() function
+		
 
 		/**
 		 * This function allows the ranged attack enemies to shoot projectiles at the player.
 		 */
 		private function shootProjectiles(): void {
 			var proj: Projectile = new Projectile(this);
-			addChild(proj);
+			ScenePlay.level.addChild(proj);
 			projectiles.push(proj);
 		} // ends the shootProjectiles() function
 		
@@ -57,7 +62,7 @@
 			for(var i = projectiles.length - 1; i >= 0; i--) {
 				projectiles[i].update();
 				if(projectiles[i].isDead) {
-					removeChild(projectiles[i]);
+					ScenePlay.level.removeChild(projectiles[i]);
 					projectiles.splice(i, i);
 				}
 			} // ends the for loop updating the projectiles
