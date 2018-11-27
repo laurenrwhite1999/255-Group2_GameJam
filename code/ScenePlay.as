@@ -140,24 +140,26 @@
 				if (player.collider.checkOverlap(platforms[i].collider)) {
 					// find the fix:
 					var fix: Point = player.collider.findOverlapFix(platforms[i].collider);
-
 					// apply the fix:
 					player.applyFix(fix);
-				}
+				}// end if
 				for (var k: int = enemies.length - 1; k >= 0; k--) {
-
 					if (enemies[k].collider.checkOverlap(platforms[i].collider)) {
 						// find the fix:
 						var enemyFix: Point = enemies[k].collider.findOverlapFix(platforms[i].collider);
-
 						// apply the fix:
 						enemies[k].applyEnemyFix(enemyFix);
-
-					}
+					}//end if
 				} // ends the for loop updating enemies
-
-
-			} // ends the for() loop
+				for (var u: int= powerUpsArray.length-1; u>=0; u--){
+					if (powerUpsArray[u].collider.checkOverlap(platforms[i].collider)){
+						//find the fix
+						var powerUpFix: Point = powerUpsArray[u].collider.findOverlapFix(platforms[i].collider);
+						// apply fix
+						powerUpsArray[u].applyPowerUpFix(powerUpFix);
+					}// end if
+				}// end powerUpsArray for (check against Platforms);
+			} // ends the for() loop platforms
 
 			for (var l: int = 0; l < collectables.length; l++) {
 
