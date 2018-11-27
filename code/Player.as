@@ -29,7 +29,7 @@
 		/** The number of jumps the player has left. */
 		private var airJumpsLeft: int = 1;
 		/** The maximum number of jumps the player can have. */
-		private var airJumpsMax: int = 1;
+		public var airJumpsMax: int = 1;
 
 		/** The velocity value of the player's jump. */
 		private var jumpVelocity: Number = 400;

@@ -14,6 +14,8 @@
 		/** The max speed that the powerUp can move left or right. */
 		private var maxSpeed: Number = 0;
 
+		public var idNumber: Number
+
 
 		/** sets up for collision detection */
 		public var collider: ColliderAABB;
@@ -25,13 +27,15 @@
 		public var powerUp2Active: Boolean = false;
 		/** checks if powerUp 3 is still active*/
 		public var powerUp3Active: Boolean = false;
+		private var player:Player;
 
 		/**
 		 * This is the constructor code for the PowerUps.
 		 * @param spawnX Where to spawn the PowerUps on the x axis.
 		 * @param spawnY Where to spawn the PowerUps on the y axis.
 		 */
-		public function PowerUps(spawnX: Number, spawnY: Number) {
+		public function PowerUps(p:Player, spawnX: Number, spawnY: Number) {
+			player = p;
 			var spawnPowerUp: int = Math.random() * 3 + 1;
 			/**
 			 * Type 1.
@@ -40,15 +44,15 @@
 			 */
 			if (spawnPowerUp == 1) {
 				gotoAndStop(0);
-				powerUp1Active = true;
+				idNumber = 1;
 			} // end if
 			if (spawnPowerUp == 2) {
 				gotoAndStop(1);
-				powerUp2Active = true;
+				idNumber = 2;
 			} // end if
 			if (spawnPowerUp == 3) {
 				gotoAndStop(2);
-				powerUp3Active;
+				idNumber = 3;
 			} //end if
 			x = spawnX + 200; // moves the powerup in front of the player
 			y = spawnY;
@@ -99,12 +103,15 @@
 		public function isPowerUpActive(): void {
 			if (powerUp1Active) {
 				//power up 1
+				player.airJumpsMax=3;
 			} // end if
 			if (powerUp2Active) {
 				//power up 2
+				player.airJumpsMax=3;
 			} // end if
 			if (powerUp3Active) {
 				//power up 3
+				player.airJumpsMax=3;
 			} // end if
 		} // end isPowerUpActive
 

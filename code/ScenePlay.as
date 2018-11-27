@@ -26,13 +26,17 @@
 		/** How much to delay the spawn of the next enemy. */
 		private var delayEnemySpawn: Number = 0;
 
+
 		public static var isItemOneSpawned: Boolean = false;
 		public static var isItemTwoSpawned: Boolean = false;
 		public static var isItemThreeSpawned: Boolean = false;
 
-
+		/** How much to delay the spawn of the next powerUp */
 		private var delayPowerUpsSpawn: Number = 0;
+		/** This array holds all of the powerUps */
 		private var powerUpsArray: Array = new Array();
+		/** This is how long a power up is active*/
+		public var powerUpsActiveTimer: Number = 0;
 
 
 
@@ -114,7 +118,7 @@
 
 		public function spawnPowerUps(): void {
 			if (delayPowerUpsSpawn <= 0) {
-				var powerUp: PowerUps = new PowerUps(player.x, player.y)
+				var powerUp: PowerUps = new PowerUps(player, player.x, player.y)
 				level.addChild(powerUp);
 				powerUpsArray.push(powerUp);
 				delayPowerUpsSpawn = 100;
@@ -130,8 +134,25 @@
 					powerUpsArray.splice(u, 1)
 				} // end if
 			} // end for
+			updatePowerUpTimer();
 		} // end updatePowerUps
 
+		/**
+		 *This function keeps track of active powerups and timer
+		 */
+		public function updatePowerUpTimer(): void {
+			if (powerUpsActiveTimer <= 0) {
+				for (var u: int = powerUpsArray.length - 1; u >= 0; u--) {
+					powerUpsArray[u].powerUp1Active = false;
+					powerUpsArray[u].powerUp2Active = false;
+					powerUpsArray[u].powerUp3Active = false;
+				}
+			} else if (powerUpsActiveTimer > 0) {
+				powerUpsActiveTimer--;
+				trace("powerUpTimer: " + powerUpsActiveTimer);
+			} // end if
+		} // end powerUpTimer
+		
 		/**
 		 * Prevents the player from moving through the platforms.
 		 */
@@ -142,41 +163,64 @@
 					var fix: Point = player.collider.findOverlapFix(platforms[i].collider);
 					// apply the fix:
 					player.applyFix(fix);
-				}// end if
+				} // end if
 				for (var k: int = enemies.length - 1; k >= 0; k--) {
 					if (enemies[k].collider.checkOverlap(platforms[i].collider)) {
 						// find the fix:
 						var enemyFix: Point = enemies[k].collider.findOverlapFix(platforms[i].collider);
 						// apply the fix:
 						enemies[k].applyEnemyFix(enemyFix);
-					}//end if
+					} //end if
 				} // ends the for loop updating enemies
-				for (var u: int= powerUpsArray.length-1; u>=0; u--){
-					if (powerUpsArray[u].collider.checkOverlap(platforms[i].collider)){
+				for (var u: int = powerUpsArray.length - 1; u >= 0; u--) {
+					if (powerUpsArray[u].collider.checkOverlap(platforms[i].collider)) {
 						//find the fix
 						var powerUpFix: Point = powerUpsArray[u].collider.findOverlapFix(platforms[i].collider);
 						// apply fix
 						powerUpsArray[u].applyPowerUpFix(powerUpFix);
-					}// end if
-				}// end powerUpsArray for (check against Platforms);
+					} // end if
+				} // end powerUpsArray for (check against Platforms);
 			} // ends the for() loop platforms
 
+			/** this loop checks the power ups against the player collision */
+			for (var w: int = 0; w < powerUpsArray.length; w++) {
+				if (player.collider.checkOverlap(powerUpsArray[w].collider)) {
+					if (powerUpsArray[w].idNumber == 1) {
+						powerUpsArray[w].powerUp1Active = true;
+						powerUpsArray[w].powerUp2Active = false;
+						powerUpsArray[w].powerUp3Active = false;
+						powerUpsActiveTimer = 20;
+						powerUpsArray[w].isDead = true;
+					} // end if powerUp 1
+					if (powerUpsArray[w].idNumber == 2) {
+						powerUpsArray[w].powerUp1Active = false;
+						powerUpsArray[w].powerUp2Active = true;
+						powerUpsArray[w].powerUp3Active = false;
+						powerUpsArray[w].isDead = true;
+						powerUpsActiveTimer = 20;
+					} // end if powerUp 2
+					if (powerUpsArray[w].idNumber == 3) {
+						powerUpsArray[w].powerUp1Active = false;
+						powerUpsArray[w].powerUp2Active = false;
+						powerUpsArray[w].powerUp3Active = true;
+						powerUpsArray[w].isDead = true;
+						powerUpsActiveTimer = 20;
+					} // end if powerUp 3
+				} // end if player
+			} // end for loop powerups vs player
+
 			for (var l: int = 0; l < collectables.length; l++) {
-
 				if (player.collider.checkOverlap(collectables[l].collider)) {
-
 					if (collectables[l].idNum == 3) {
 						trace("item three picked up");
 						collectables[l].isDead = true;
 					} else if (collectables[l].idNum == 2) {
 						trace("item two picked up");
 						collectables[l].isDead = true;
-
 					} else if (collectables[l].idNum == 1) {
 						trace("item one picked up");
 						collectables[l].isDead = true;
 					}
-
 
 				} // end if() statement
 
