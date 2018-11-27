@@ -11,13 +11,8 @@
 		private var velocity: Point = new Point(1, 5);
 		/** Stores whether the power up should be removed from the screen */
 		public var isDead: Boolean = false;
-		/**
-		 * This holds the powerup type that is spawned into the game.
-		 * Type 1.
-		 * Type 2.
-		 * Type 3.
-		 */
-		public var spawnPowerUp: int = Math.random() * 3 + 1;
+
+
 		/** sets up for collision detection */
 		public var collider: ColliderAABB;
 		/** checks to make sure a powerup is spawned in the play scene */
@@ -35,6 +30,24 @@
 		 * @param spawnY Where to spawn the PowerUps on the y axis.
 		 */
 		public function powerUps(spawnX: Number, spawnY: Number) {
+			var spawnPowerUp: int = Math.random() * 3 + 1;
+			/**
+			 * Type 1.
+			 * Type 2.
+			 * Type 3.
+			 */
+			if (spawnPowerUp == 1) {
+				gotoAndStop(0);
+				powerUp1Active = true;
+			}// end if
+			if (spawnPowerUp == 2) {
+				gotoAndStop(1);
+				powerUp2Active = true;
+			}// end if
+			if (spawnPowerUp == 3) {
+				gotoAndStop(2);
+				powerUp3Active;
+			}//end if
 			x = spawnX + 200; // moves the powerup in front of the player
 			y = spawnY;
 
@@ -76,18 +89,18 @@
 
 			collider.calcEdges(x, y);
 		} // ends the applyFix() function
-		
-		public function isPowerUpActive(): void{
-			if (powerUp1Active){
+
+		public function isPowerUpActive(): void {
+			if (powerUp1Active) {
 				//power up 1
-			}// end if
-			if (powerUp2Active){
+			} // end if
+			if (powerUp2Active) {
 				//power up 2
-			}// end if
-			if (powerUp3Active){
+			} // end if
+			if (powerUp3Active) {
 				//power up 3
-			}// end if
-		}// end isPowerUpActive
+			} // end if
+		} // end isPowerUpActive
 
 
 	} // end class

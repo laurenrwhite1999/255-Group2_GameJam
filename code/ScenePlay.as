@@ -31,6 +31,10 @@
 		public static var isItemThreeSpawned: Boolean = false;
 
 
+		private var delayPowerUpsSpawn: Number = 0;
+		private var powerUpsArray: Array = new Array();
+
+
 
 
 		/** this is the scene play function */
@@ -50,7 +54,9 @@
 		override public function update(): GameScene {
 
 			player.update(); // updates player for current frame
+			spawnPowerUps();
 			spawnEnemies(); // spawns the enemies
+			updatePowerUps();
 			updateEnemies();
 			doCollisionDetection(); // does collision detection
 			KeyboardInput.update(); // updates the keyboard for the current frame
@@ -106,6 +112,26 @@
 
 		} // ends the updateEnemies() function
 
+		public function spawnPowerUps(): void {
+			if (delayPowerUpsSpawn <= 0) {
+				var powerUp: PowerUps = new PowerUps(200,0)
+				level.addChild(powerUp);
+				powerUpsArray.push(powerUp);
+				delayPowerUpsSpawn = 100;
+			} // end if
+			delayPowerUpsSpawn--;
+		} // end spawnPowerUps
+
+		public function updatePowerUps(): void {
+			for (var u: int = powerUpsArray.length - 1; u >= 0; u--) {
+				powerUpsArray[u].update;
+				if (powerUpsArray[u].isDead) {
+					level.removeChild(powerUpsArray[u]);
+					powerUpsArray.splice(u, 1)
+				} // end if
+			} // end for
+		} // end updatePowerUps
+
 		/**
 		 * Prevents the player from moving through the platforms.
 		 */
@@ -118,8 +144,8 @@
 					// apply the fix:
 					player.applyFix(fix);
 				}
-				for (var k: int = enemies.length-1; k >=0; k--) {
-					
+				for (var k: int = enemies.length - 1; k >= 0; k--) {
+
 					if (enemies[k].collider.checkOverlap(platforms[i].collider)) {
 						// find the fix:
 						var enemyFix: Point = enemies[k].collider.findOverlapFix(platforms[i].collider);
