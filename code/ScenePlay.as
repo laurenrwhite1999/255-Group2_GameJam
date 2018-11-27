@@ -134,7 +134,7 @@
 					// apply the fix:
 					player.applyFix(fix);
 				}
-				
+
 				for (var k: int = basicEnemies.length - 1; k >= 0; k--) {
 
 					if (basicEnemies[k].collider.checkOverlap(platforms[i].collider)) {
@@ -145,15 +145,20 @@
 						basicEnemies[k].applyEnemyFix(enemyFix);
 
 					}
+					if (basicEnemies[k].collider.checkOverlap(player.collider)) {
+						basicEnemies[k].isDead = true;
+					}
 				} // ends the for loop updating basic enemies
 
-				for(var l: int = rangedEnemies.length - 1; l >= 0; l--) {
-					if(rangedEnemies[l].collider.checkOverlap(platforms[i].collider)) {
+				for (var l: int = rangedEnemies.length - 1; l >= 0; l--) {
+					if (rangedEnemies[l].collider.checkOverlap(platforms[i].collider)) {
 						var enemyFix: Point = rangedEnemies[l].collider.findOverlapFix(platforms[i].collider);
 						rangedEnemies[l].applyEnemyFix(enemyFix);
 					}
 				}
-
+				/*if (rangedEnemies[l].collider.checkOverlap(player.collider)) {
+					rangedEnemies[l].isDead = true;
+				}*/
 			} // ends the for() loop
 
 			for (var l: int = 0; l < collectables.length; l++) {

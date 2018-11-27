@@ -49,7 +49,7 @@
 
 			collider.calcEdges(x, y);
 
-			if (this.y == 550 || this.x < ScenePlay.player.x) isDead = true;
+			if (this.y == 550 || this.x < (ScenePlay.player.x - 500)) isDead = true;
 		} // ends the update() function
 
 		/**
