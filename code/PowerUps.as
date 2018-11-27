@@ -27,19 +27,19 @@
 		public var powerUp2Active: Boolean = false;
 		/** checks if powerUp 3 is still active*/
 		public var powerUp3Active: Boolean = false;
-		private var player:Player;
+		private var player: Player;
 
 		/**
 		 * This is the constructor code for the PowerUps.
 		 * @param spawnX Where to spawn the PowerUps on the x axis.
 		 * @param spawnY Where to spawn the PowerUps on the y axis.
 		 */
-		public function PowerUps(p:Player, spawnX: Number, spawnY: Number) {
+		public function PowerUps(p: Player, spawnX: Number, spawnY: Number) {
 			player = p;
 			var spawnPowerUp: int = Math.random() * 3 + 1;
 			/**
-			 * Type 1.
-			 * Type 2.
+			 * Type 1. increase Max Air jumps to 3 from Player class
+			 * Type 2. increase Max Speed to 500 from Player class
 			 * Type 3.
 			 */
 			if (spawnPowerUp == 1) {
@@ -60,6 +60,9 @@
 			collider = new ColliderAABB(width / 2, height / 2);
 		} // end PowerUps
 
+		/**
+		 * This function updates all the powerups in scenePlay
+		 */
 		public function update(): void {
 			isPowerUpActive();
 			doPhysics();
@@ -100,11 +103,14 @@
 			collider.calcEdges(x, y);
 		} // ends the applyFix() function
 
+		/**
+		 * This function sets up the active powerups and their effects
+		 */
 		public function isPowerUpActive(): void {
 			if (powerUp1Active) {
 				//power up 1
-				player.airJumpsMax=3;
-				} // end if
+				player.airJumpsMax = 3;
+			} // end if
 			else if (powerUp2Active) {
 				//power up 2
 				player.maxSpeed = 500;
@@ -115,12 +121,11 @@
 				player.maxSpeed = 500;
 			} // end if
 			else {
-				player.airJumpsMax=1;
-				player.maxSpeed=200;
-			}// end else
+				player.airJumpsMax = 1;
+				player.maxSpeed = 200;
+			} // end else
 		} // end isPowerUpActive
 
 
 	} // end class
-
 } // end package
