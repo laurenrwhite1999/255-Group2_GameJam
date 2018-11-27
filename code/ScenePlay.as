@@ -11,8 +11,10 @@
 
 		static public var platforms: Array = new Array(); // platforms array to hold
 		static public var collectables: Array = new Array(); // array to hold collectables
-		/** This array holds all of the enemies. */
-		private var enemies: Array = new Array();
+		/** This array holds all of the basic enemies. */
+		private var basicEnemies: Array = new Array();
+		/** This array holds all of the ranged attack enemies. */
+		private var rangedEnemies: Array = new Array();
 
 		static public var player: Player = new Player(); // brings the player into the sceneplay
 		/**	This stores the current scene using a FSM. */
@@ -82,9 +84,15 @@
 		public function spawnEnemies(): void {
 			if (delayEnemySpawn <= 0) {
 				var spawnLocation = Math.random() * stage.width + 1000;
-				var enemy: BasicEnemy = new BasicEnemy(spawnLocation, 0);
-				level.addChild(enemy);
-				enemies.push(enemy);
+				var basicEnemy: BasicEnemy = new BasicEnemy(spawnLocation, 0);
+				var rangedEnemy: RangedEnemy = new RangedEnemy(spawnLocation, 0);
+
+				level.addChild(basicEnemy);
+				basicEnemies.push(basicEnemy);
+
+				level.addChild(rangedEnemy);
+				rangedEnemies.push(rangedEnemy);
+
 				delayEnemySpawn = 20;
 			}
 			delayEnemySpawn--;
@@ -96,14 +104,21 @@
 		 * This function updates each enemy in the array.
 		 */
 		public function updateEnemies(): void {
-			for (var i: int = enemies.length - 1; i >= 0; i--) {
-				enemies[i].update();
-				if (enemies[i].isDead) {
-					level.removeChild(enemies[i]);
-					enemies.splice(i, 1);
+			for (var i: int = basicEnemies.length - 1; i >= 0; i--) {
+				basicEnemies[i].update();
+				if (basicEnemies[i].isDead) {
+					level.removeChild(basicEnemies[i]);
+					basicEnemies.splice(i, 1);
 				}
-			} // ends the for loop
+			} // ends the for loop updating the basic enemies
 
+			for (var j: int = rangedEnemies.length - 1; i >= 0; i--) {
+				rangedEnemies[j].update();
+				if (rangedEnemies[j].isDead) {
+					level.removeChild(rangedEnemies[j]);
+					rangedEnemies.splice(j, 1);
+				}
+			} // ends the for loop updating the ranged enemies
 
 		} // ends the updateEnemies() function
 
@@ -119,18 +134,25 @@
 					// apply the fix:
 					player.applyFix(fix);
 				}
-				for (var k: int = enemies.length-1; k >=0; k--) {
-					
-					if (enemies[k].collider.checkOverlap(platforms[i].collider)) {
+				
+				for (var k: int = basicEnemies.length - 1; k >= 0; k--) {
+
+					if (basicEnemies[k].collider.checkOverlap(platforms[i].collider)) {
 						// find the fix:
-						var enemyFix: Point = enemies[k].collider.findOverlapFix(platforms[i].collider);
+						var enemyFix: Point = basicEnemies[k].collider.findOverlapFix(platforms[i].collider);
 
 						// apply the fix:
-						enemies[k].applyEnemyFix(enemyFix);
+						basicEnemies[k].applyEnemyFix(enemyFix);
 
 					}
-				} // ends the for loop updating enemies
+				} // ends the for loop updating basic enemies
 
+				for(var l: int = rangedEnemies.length - 1; l >= 0; l--) {
+					if(rangedEnemies[l].collider.checkOverlap(platforms[i].collider)) {
+						var enemyFix: Point = rangedEnemies[l].collider.findOverlapFix(platforms[i].collider);
+						rangedEnemies[l].applyEnemyFix(enemyFix);
+					}
+				}
 
 			} // ends the for() loop
 
