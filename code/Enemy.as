@@ -26,8 +26,6 @@
 
 		/** Stores whether or not the cureent enemy is dead. */
 		public var isDead: Boolean = false;
-		
-		var player:Player = new Player();
 
 		/**
 		 * This is the constructor code for the enemies.
@@ -51,17 +49,15 @@
 
 			collider.calcEdges(x, y);
 
-			if (this.y == 550 || this.x < player.x) isDead = true;
+			if (this.y == 550 || this.x < ScenePlay.player.x) isDead = true;
 		} // ends the update() function
 
 		/**
 		 * This function tells the enemy to walk toward the player if the player is within the attack range.
 		 */
 		private function handleWalking(): void {
-			if (player.x == this.x - 200) {
-				velocity.x -= HORIZONTAL_ACCELERATION * Time.dt;
-				if (velocity.x > 0) velocity.x = 0; // clamp velocity at 0
-			}
+			velocity.x -= HORIZONTAL_ACCELERATION * Time.dt;
+			if (velocity.x > 0) velocity.x = 0; // clamp velocity at 0
 		} // ends the handleWalking() function
 
 		/**

@@ -14,7 +14,7 @@
 		/** This array holds all of the enemies. */
 		private var enemies: Array = new Array();
 
-		public var player: Player = new Player(); // brings the player into the sceneplay
+		static public var player: Player = new Player(); // brings the player into the sceneplay
 		/**	This stores the current scene using a FSM. */
 		private var gameScene: GameScene;
 		/** This is the level to load. */
@@ -81,7 +81,8 @@
 		 */
 		public function spawnEnemies(): void {
 			if (delayEnemySpawn <= 0) {
-				var enemy: BasicEnemy = new BasicEnemy(200, 0);
+				var spawnLocation = Math.random() * stage.width + 1000;
+				var enemy: BasicEnemy = new BasicEnemy(spawnLocation, 0);
 				level.addChild(enemy);
 				enemies.push(enemy);
 				delayEnemySpawn = 20;
