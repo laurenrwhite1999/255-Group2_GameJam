@@ -11,6 +11,8 @@
 		private var velocity: Point = new Point(1, 5);
 		/** Stores whether the power up should be removed from the screen */
 		public var isDead: Boolean = false;
+		/** The max speed that the powerUp can move left or right. */
+		private var maxSpeed: Number = 0;
 
 
 		/** sets up for collision detection */
@@ -39,15 +41,15 @@
 			if (spawnPowerUp == 1) {
 				gotoAndStop(0);
 				powerUp1Active = true;
-			}// end if
+			} // end if
 			if (spawnPowerUp == 2) {
 				gotoAndStop(1);
 				powerUp2Active = true;
-			}// end if
+			} // end if
 			if (spawnPowerUp == 3) {
 				gotoAndStop(2);
 				powerUp3Active;
-			}//end if
+			} //end if
 			x = spawnX + 200; // moves the powerup in front of the player
 			y = spawnY;
 
@@ -57,7 +59,6 @@
 		public function update(): void {
 			isPowerUpActive();
 			doPhysics();
-
 			collider.calcEdges(x, y);
 
 			if (this.y >= stage.stageHeight && this.x <= 0) isDead = true;
@@ -67,9 +68,14 @@
 		 * This function applies gravity to the powerup
 		 */
 		private function doPhysics(): void {
+
 			var gravityMultiplier: Number = 2;
 			velocity.y += gravity.y * Time.dt * gravityMultiplier;
 
+			if (velocity.x < -maxSpeed) velocity.x = -maxSpeed;
+
+			x += velocity.x * Time.dt;
+			y += velocity.y * Time.dt;
 		} // end doPhysics
 
 		/**

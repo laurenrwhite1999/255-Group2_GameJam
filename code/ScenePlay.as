@@ -124,7 +124,7 @@
 
 		public function updatePowerUps(): void {
 			for (var u: int = powerUpsArray.length - 1; u >= 0; u--) {
-				powerUpsArray[u].update;
+				powerUpsArray[u].update();
 				if (powerUpsArray[u].isDead) {
 					level.removeChild(powerUpsArray[u]);
 					powerUpsArray.splice(u, 1)
