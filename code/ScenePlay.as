@@ -4,20 +4,28 @@
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.display.MovieClip;
+	import flash.media.Sound;
+	import flash.media.SoundChannel;
 
 
 	/** this is the ScenePlay class which extends to the current gamescene, which means it gives the gamescene its code */
 	public class ScenePlay extends GameScene {
 
-		static public var platforms: Array = new Array(); // platforms array to hold
-		static public var collectables: Array = new Array(); // array to hold collectables
+		/** This array holds the platform objects. */
+		static public var platforms: Array = new Array();
+		/** This array holds the Trick platforms */
+		static public var trickPlatforms: Array = new Array();
+		/** This array holds the collectables objects. */
+		static public var collectables: Array = new Array();
+		/** This array is the players inventory+ */
+		private var inventory: Array = new Array();
 		/** This array holds all of the basic enemies. */
 		private var basicEnemies: Array = new Array();
 		/** This array holds all of the ranged attack enemies. */
 		private var rangedEnemies: Array = new Array();
-		private var inventory: Array = new Array(); // this is the "inventory" of the player
-		static public var trickPlatforms: Array = new Array(); // platforms array to hold
-		
+		/** This array hold all of the flying enemies. */
+		private var flyingEnemies: Array = new Array();
+
 		static public var player: Player = new Player(); // brings the player into the sceneplay
 		/**	This stores the current scene using a FSM. */
 		private var gameScene: GameScene;
@@ -27,14 +35,54 @@
 		private var shakeTimer: Number = 0;
 		/** How much to multiply the shake intensity by. */
 		private var shakeMultiplier: Number = 20;
-		/** How much to delay the spawn of the next enemy. */
-		private var delayEnemySpawn: Number = 0;
 
-		private var dissPlatTimer: Number = 20;
+		/** How much to delay the spawn of the next basic enemy. */
+		private var delayBasicEnemySpawn: Number = 0;
+		/** How much to delay the spawn of the next ranged enemy. */
+		private var delayRangedEnemySpawn: Number = 0;
+		/** How much to delay the spawn of the next flying enemy. */
+		private var delayFlyingEnemySpawn: Number = 0;
 
+
+		/** Stores whether item one has spawned or not. */
 		public static var isItemOneSpawned: Boolean = false;
+		/** Stores whether item two has spawned or not. */
 		public static var isItemTwoSpawned: Boolean = false;
+		/** Stores whether item three has spawned or not. */
 		public static var isItemThreeSpawned: Boolean = false;
+		/** stores whether the player has item one or not **/
+		public var hasItemOne: Boolean = false;
+		/** stores whether the player has item two or not **/
+		public var hasItemTwo: Boolean = false;
+		/** stores whether the player has item three or not **/
+		public var hasItemThree: Boolean = false;
+		/** stores whether the player has powerUp or not **/
+		public var hasPowerUp: Boolean = false;
+
+		public var hasPowerUpOne: Boolean = false;
+		public var hasPowerUpTwo: Boolean = false;
+		public var hasPowerUpThree: Boolean = false;
+
+		/** this var sets up the players health */
+		public var playerHealth: int = 6;
+
+		/** this var sets up the players score */
+		public var playerScore: int = 0;
+
+		/** this var holds a HUD instance **/
+		public var hud: HUD;
+
+		/** hold the games music in a music var so that it can be accessed when game is played */
+		private var music: mainBGMusic = new mainBGMusic();
+		/** hold the power up SFX */
+		public var pwUHeart: PwUHeart = new PwUHeart();
+		/** hold the power up SFX */
+		public var pwUJump: PwUJump = new PwUJump();
+		/** hold the power up SFX */
+		public var pwUSpeed: PwUSpeed = new PwUSpeed();
+
+		/** this var holds a new sound channel, which is the thing that controls whether the music is playing or not */
+		private var myChannel: SoundChannel = new SoundChannel();
 
 		/** How much to delay the spawn of the next powerUp */
 		private var delayPowerUpsSpawn: Number = 0;
@@ -42,22 +90,29 @@
 		private var powerUpsArray: Array = new Array();
 		/** This is how long a power up is active*/
 		public var powerUpsActiveTimer: Number = 0;
+		/** This holds each particle spawned */
+		private var particles: Array = new Array();
+
+		///////////////////////////////////////////////////////////////////////// begin scene play
 
 
-
-
-		/** this is the scene play function */
+		/**
+		 * This is the ScenePlay function.
+		 */
 		public function ScenePlay() {
 			loadLevel();
-			var bgMusic: mainBGMusic = new mainBGMusic();
-			bgMusic.play();
-			player.x = 0; // sets players x position
-			player.y = 0; // sets players y position
+
+			myChannel = music.play();
+
+			hud = new HUD();
+			addChild(hud);
+
+			player.x = -50; // sets players x position
+			player.y = -50; // sets players y position
 			level.addChild(player); // adds player to scene
+		} //end the ScenePlay() function
 
-
-
-		} //end scene play
+		///////////////////////////////////////////////////////////////////////
 
 		/**
 		 * this is the update function for the ScenePlay class
@@ -69,14 +124,20 @@
 			spawnEnemies(); // spawns the enemies
 			updatePowerUps();
 			updateEnemies();
-			updateEverything();
+
 			doCollisionDetection(); // does collision detection
+
+			hud.update(this);
+
 			KeyboardInput.update(); // updates the keyboard for the current frame
-
+			updateParticles();
 			doCameraMove();
+			updateEverything();
 
-			if (player.y > 550) {
+
+			if (player.y > 1000 || playerHealth == 0) {
 				level.removeChild(player);
+				myChannel.stop();
 				return new SceneLose(); // if the player falls off the stage return lose screen
 			}
 			/**
@@ -92,56 +153,83 @@
 			return null; // return with nothing
 		}
 
+		///////////////////////////////////////////////////////////////////////
+
 		/**
 		 * This function spawns the enemies.
 		 */
 		public function spawnEnemies(): void {
-			if (delayEnemySpawn <= 0) {
-				var spawnLocation = Math.random() * stage.width + 1000;
+			var spawnLocation = Math.random() * stage.width + 1000;
+			if (delayBasicEnemySpawn <= 0) {
 				var basicEnemy: BasicEnemy = new BasicEnemy(spawnLocation, 0);
-				var rangedEnemy: RangedEnemy = new RangedEnemy(spawnLocation, 0);
-
 				level.addChild(basicEnemy);
 				basicEnemies.push(basicEnemy);
+				delayBasicEnemySpawn = 20;
+			}
 
+			if (delayRangedEnemySpawn <= 0) {
+				var rangedEnemy: RangedEnemy = new RangedEnemy(spawnLocation, 0);
 				level.addChild(rangedEnemy);
 				rangedEnemies.push(rangedEnemy);
-
-				delayEnemySpawn = 20;
+				delayRangedEnemySpawn = 40;
 			}
-			delayEnemySpawn--;
 
+			if (delayFlyingEnemySpawn <= 0) {
+				var flyingEnemy: FlyingEnemy = new FlyingEnemy(spawnLocation, -40);
+				level.addChild(flyingEnemy);
+				flyingEnemies.push(flyingEnemy);
+				delayFlyingEnemySpawn = 50;
+			}
 
+			delayBasicEnemySpawn--;
+			delayRangedEnemySpawn--;
+			delayFlyingEnemySpawn--;
 		} // ends the spawnEnemies() function
+
+		///////////////////////////////////////////////////////////////////////
 
 		/**
 		 * This function updates each enemy in the array.
 		 */
 		public function updateEnemies(): void {
 			for (var i: int = basicEnemies.length - 1; i >= 0; i--) {
-				basicEnemies[i].update();
+				basicEnemies[i].update(this);
 				if (basicEnemies[i].isDead) {
 					level.removeChild(basicEnemies[i]);
+
 					basicEnemies.splice(i, 1);
 				}
 			} // ends the for loop updating the basic enemies
 
 			for (var j: int = rangedEnemies.length - 1; j >= 0; j--) {
-				rangedEnemies[j].update();
+				rangedEnemies[j].update(this);
 				if (rangedEnemies[j].isDead) {
 					level.removeChild(rangedEnemies[j]);
 					rangedEnemies.splice(j, 1);
 				}
 			} // ends the for loop updating the ranged enemies
 
+			for (var k: int = flyingEnemies.length - 1; k >= 0; k--) {
+				flyingEnemies[k].update(this);
+				if (flyingEnemies[k].isDead) {
+					level.removeChild(flyingEnemies[k]);
+					flyingEnemies.splice(k, 1);
+				}
+			} // ends the for loop updating the flying enemies
+
 		} // ends the updateEnemies() function
+
+		///////////////////////////////////////////////////////////////////////
 
 		public function spawnPowerUps(): void {
 			if (delayPowerUpsSpawn <= 0) {
 				var powerUp: PowerUps = new PowerUps(player, player.x, player.y)
 				level.addChild(powerUp);
 				powerUpsArray.push(powerUp);
-				delayPowerUpsSpawn = 100;
+				delayPowerUpsSpawn = 500;
+				hasPowerUpOne = false;
+				hasPowerUpTwo = false;
+				hasPowerUpThree = false;
 			} // end if
 			delayPowerUpsSpawn--;
 		} // end spawnPowerUps
@@ -157,6 +245,9 @@
 			updatePowerUpTimer();
 		} // end updatePowerUps
 
+		///////////////////////////////////////////////////////////////////////
+
+
 		/**
 		 *This function keeps track of active powerups and timer
 		 */
@@ -169,9 +260,62 @@
 				}
 			} else if (powerUpsActiveTimer > 0) {
 				powerUpsActiveTimer--;
-				trace("powerUpTimer: " + powerUpsActiveTimer);
 			} // end if
 		} // end powerUpTimer
+
+		///////////////////////////////////////////////////////////////////////
+
+		/**
+		 * This function updates each of the particles on the scene
+		 */
+		private function updateParticles(): void {
+			for (var i: int = particles.length - 1; i >= 0; i--) {
+				particles[i].update(player);
+				if (particles[i].isDead) {
+					// remove the particle
+					level.removeChild(particles[i]);
+					particles.splice(i, 1);
+				} // end if
+			} // end for loop
+		} // end updateParticles
+
+		///////////////////////////////////////////////////////////////////////
+
+		/** 
+		 * this function  spawns an explosion of particles from particle Boom
+		 */
+		private function spawnExplosion(): void {
+
+			for (var i: int = 0; i < 2; i++) {
+				var p: Particle = new ParticleBoom(player.x + 100, player.y);
+				level.addChild(p);
+				particles.push(p);
+			} // end for loop
+		} // end spawnExplosion
+
+		/** 
+		 * this function  spawns an explosion of particles from particleEnemy
+		 */
+		private function spawnEnemyParticle(): void {
+			for (var i: int = 0; i < 3; i++) {
+				var p: Particle = new ParticleEnemy(player.x + 50, player.y);
+				level.addChild(p);
+				particles.push(p);
+			} // end for loop
+		} // end spawnExplosion
+
+		/** 
+		 * this function  spawns an explosion of particles from particleEnemy
+		 */
+		private function spawnCollectingParticle(): void {
+			for (var i: int = 0; i < 10; i++) {
+				var p: Particle = new ParticleCollecting(player.x + 50, player.y);
+				level.addChild(p);
+				particles.push(p);
+			} // end for loop
+		} // end spawnExplosion
+
+		///////////////////////////////////////////////////////////////////////
 
 		/**
 		 * Prevents the player from moving through the platforms.
@@ -185,26 +329,43 @@
 					player.applyFix(fix);
 				}
 
+				var enemyFix: Point;
+
 				for (var k: int = basicEnemies.length - 1; k >= 0; k--) {
 
 					if (basicEnemies[k].collider.checkOverlap(platforms[i].collider)) {
 						// find the fix:
-						var enemyFix: Point = basicEnemies[k].collider.findOverlapFix(platforms[i].collider);
+						enemyFix = basicEnemies[k].collider.findOverlapFix(platforms[i].collider);
 
 						// apply the fix:
 						basicEnemies[k].applyEnemyFix(enemyFix);
 
+					}
+					if (basicEnemies[k].collider.checkOverlap(player.collider)) {
+						basicEnemies[k].isDead = true;
+						spawnEnemyParticle();
+						playerHealth -= 1;
+						var enDeath1:enemyDeath1 = new enemyDeath1();
+						enDeath1.play();
 					}
 				} // ends the for loop updating enemies
 
 				for (var l: int = rangedEnemies.length - 1; l >= 0; l--) {
 					if (rangedEnemies[l].collider.checkOverlap(platforms[i].collider)) {
 						// find the fix:
-						var enemyFix: Point = rangedEnemies[l].collider.findOverlapFix(platforms[i].collider);
+						enemyFix = rangedEnemies[l].collider.findOverlapFix(platforms[i].collider);
 						// apply the fix:
 						rangedEnemies[l].applyEnemyFix(enemyFix);
 					} //end if
-				} // ends the for loop updating enemies
+
+					if (rangedEnemies[l].collider.checkOverlap(player.collider)) {
+						rangedEnemies[l].isDead = true;
+						spawnEnemyParticle();
+						playerHealth -= 1;
+						var enDeath2:enemyDeath2 = new enemyDeath2();
+						enDeath2.play();
+					}
+				} // ends the for loop updating the ranged enemies
 
 				for (var u: int = powerUpsArray.length - 1; u >= 0; u--) {
 					if (powerUpsArray[u].collider.checkOverlap(platforms[i].collider)) {
@@ -215,125 +376,142 @@
 					} // end if
 				} // end powerUpsArray for (check against Platforms);
 
-				for (var k: int = basicEnemies.length - 1; k >= 0; k--) {
-					/** this loop checks the power ups against the player collision */
-					for (var w: int = 0; w < powerUpsArray.length; w++) {
-						if (player.collider.checkOverlap(powerUpsArray[w].collider)) {
-							if (powerUpsArray[w].idNumber == 1) {
-								powerUpsArray[w].powerUp1Active = true;
-								powerUpsArray[w].powerUp2Active = false;
-								powerUpsArray[w].powerUp3Active = false;
-								powerUpsActiveTimer = 20;
-								powerUpsArray[w].isDead = true;
-							} // end if powerUp 1
-							if (powerUpsArray[w].idNumber == 2) {
-								powerUpsArray[w].powerUp1Active = false;
-								powerUpsArray[w].powerUp2Active = true;
-								powerUpsArray[w].powerUp3Active = false;
-								powerUpsArray[w].isDead = true;
-								powerUpsActiveTimer = 20;
-							} // end if powerUp 2
-							if (powerUpsArray[w].idNumber == 3) {
-								powerUpsArray[w].powerUp1Active = false;
-								powerUpsArray[w].powerUp2Active = false;
-								powerUpsArray[w].powerUp3Active = true;
-								powerUpsArray[w].isDead = true;
-								powerUpsActiveTimer = 20;
-							} // end if powerUp 3
-						} // end if player
-					} // end for loop powerups vs player
-					if (basicEnemies[k].collider.checkOverlap(platforms[i].collider)) {
+				for (var j: int = 0; j < trickPlatforms.length; j++) {
+
+					if (player.collider.checkOverlap(trickPlatforms[j].collider)) {
 						// find the fix:
-						var enemyFix: Point = basicEnemies[k].collider.findOverlapFix(platforms[i].collider);
+						fix = player.collider.findOverlapFix(trickPlatforms[j].collider);
 
 						// apply the fix:
-						basicEnemies[k].applyEnemyFix(enemyFix);
+						if (trickPlatforms[j].idNum == 6) {
+							player.maxSpeed = 150;
+							player.applyFix(fix);
+						}
+						if (trickPlatforms[j].idNum == 5) {
+							player.applyFix(fix);
+							trickPlatforms[j].update(player);
+						}
+						if (trickPlatforms[j].idNum == 4) {
+							player.applyFix(fix);
+							trickPlatforms[j].update(player);
+						}
+						if (trickPlatforms[j].idNum == 3) {
+							player.applyFix(fix);
+							trickPlatforms[j].update(player);
+						}
+						if (trickPlatforms[j].idNum == 2) {
+							player.applyFix(fix);
+							trickPlatforms[j].update(player);
+						}
+						if (trickPlatforms[j].idNum == 1) {
+							if (trickPlatforms[j].dissPlatTimer <= 0) {
+								trickPlatforms[j].isDead = true;
+								trickPlatforms[j].dissPlatTimer = 20;
+							}
+							trickPlatforms[j].dissPlatTimer--;
+							player.applyFix(fix);
+						}
+					}
 
-					}
-					if (basicEnemies[k].collider.checkOverlap(player.collider)) {
-						basicEnemies[k].isDead = true;
-					}
-				} // ends the for loop updating basic enemies
 
-				for (var l: int = rangedEnemies.length - 1; l >= 0; l--) {
-					if (rangedEnemies[l].collider.checkOverlap(platforms[i].collider)) {
-						var enemyFix: Point = rangedEnemies[l].collider.findOverlapFix(platforms[i].collider);
-						rangedEnemies[l].applyEnemyFix(enemyFix);
-					}
 				}
-				/*if (rangedEnemies[l].collider.checkOverlap(player.collider)) {
-					rangedEnemies[l].isDead = true;
-				}*/
+
+
+				/** this loop checks the power ups against the player collision */
+				for (var w: int = 0; w < powerUpsArray.length; w++) {
+					if (player.collider.checkOverlap(powerUpsArray[w].collider)) {
+
+						if (powerUpsArray[w].idNumber == 1) {
+							powerUpsArray[w].powerUp1Active = true;
+							powerUpsArray[w].powerUp2Active = false;
+							powerUpsArray[w].powerUp3Active = false;
+							powerUpsActiveTimer = 20;
+							playerScore += 1;
+							hasPowerUpOne = true;
+							hasPowerUpTwo = false;
+							hasPowerUpThree = false;
+							powerUpsArray[w].isDead = true;
+							pwUJump.play();
+						} // end if powerUp 1
+						if (powerUpsArray[w].idNumber == 2) {
+							powerUpsArray[w].powerUp1Active = false;
+							powerUpsArray[w].powerUp2Active = true;
+							powerUpsArray[w].powerUp3Active = false;
+							powerUpsArray[w].isDead = true;
+							playerScore += 1;
+							hasPowerUpOne = false;
+							hasPowerUpTwo = true;
+							hasPowerUpThree = false;
+							hasPowerUp = true;
+							powerUpsActiveTimer = 20;
+							pwUSpeed.play();
+						} // end if powerUp 2
+						if (powerUpsArray[w].idNumber == 3) {
+							powerUpsArray[w].powerUp1Active = false;
+							powerUpsArray[w].powerUp2Active = false;
+							powerUpsArray[w].powerUp3Active = true;
+							powerUpsArray[w].isDead = true;
+							playerScore += 1;
+							hasPowerUpOne = false;
+							hasPowerUpTwo = false;
+							hasPowerUpThree = true;
+							hasPowerUp = true;
+							powerUpsActiveTimer = 20;
+							pwUHeart.play();
+						} // end if powerUp 3
+						spawnExplosion();
+
+					} // end if player
+				} // end for loop powerups vs player
+
 			} // ends the for() loop
 
+			for (var r: int = flyingEnemies.length - 1; r >= 0; r--) {
+				if (flyingEnemies[r].collider.checkOverlap(player.collider)) {
+					flyingEnemies[r].isDead = true;
+					spawnEnemyParticle();
+					playerHealth -= 1;
+					var enDeath3:enemyDeath3 = new enemyDeath3();
+						enDeath3.play();
+				}
+			} // ends the for loop updating the flying enemies
+
 			for (var l: int = 0; l < collectables.length; l++) {
+
 				if (player.collider.checkOverlap(collectables[l].collider)) {
+
 					if (collectables[l].idNum == 3) {
-						trace("item three picked up");
 						inventory.push(collectables[l]);
 						collectables[l].isDead = true;
-						trace(inventory[0]);
-						trace(inventory[1]);
-						trace(inventory[2]);
+						playerScore += 50;
+						hasItemThree = true;
+						var threePickUp: itemThreePickUp = new itemThreePickUp();
+						threePickUp.play();
 
-					} else if (collectables[l].idNum == 2) {
-						trace("item two picked up");
-						inventory.push(collectables[l]);
-						collectables[l].isDead = true;
-						trace(inventory[0]);
-						trace(inventory[1]);
-						trace(inventory[2]);
-
-					} else if (collectables[l].idNum == 1) {
-						trace("item one picked up");
-						inventory.push(collectables[l]);
-						collectables[l].isDead = true;
-						trace(inventory[0]);
-						trace(inventory[1]);
-						trace(inventory[2]);
 					}
+					if (collectables[l].idNum == 2) {
+						inventory.push(collectables[l]);
+						collectables[l].isDead = true;
+						playerScore += 50;
+						hasItemTwo = true;
+						var twoPickUp: itemTwoPickUp = new itemTwoPickUp();
+						twoPickUp.play();
+
+					}
+					if (collectables[l].idNum == 1) {
+						inventory.push(collectables[l]);
+						collectables[l].isDead = true;
+						playerScore += 50;
+						hasItemOne = true;
+						var onePickUp: itemOnePickUp = new itemOnePickUp();
+						onePickUp.play();
+					}
+					spawnCollectingParticle()
+
 
 				} // end if() statement
 
 			} // end collectables for() loop
-
-			for (var j: int = 0; j < trickPlatforms.length; j++) {
-
-				if (player.collider.checkOverlap(trickPlatforms[j].collider)) {
-					// find the fix:
-					fix = player.collider.findOverlapFix(trickPlatforms[j].collider);
-
-					// apply the fix:
-
-					player.applyFix(fix);
-
-					if (trickPlatforms[j].idNum == 3) {
-
-						trace("works3");
-
-					}
-					if (trickPlatforms[j].idNum == 2) {
-
-
-						//trickPlatforms[j].y += 5;
-						trace("works2");
-
-					}
-					if (trickPlatforms[j].idNum == 1) {
-
-						if (dissPlatTimer <= 0) {
-							trickPlatforms[j].isDead = true;
-							dissPlatTimer = 20;
-						}
-						dissPlatTimer--;
-
-						trace("works1");
-					}
-
-
-				}
-			}
-
 
 		} // ends the doCollisionDetection() function
 
@@ -348,7 +526,9 @@
 			isItemOneSpawned = false;
 			isItemTwoSpawned = false;
 			isItemThreeSpawned = false;
-
+			hasItemOne = true;
+			hasItemTwo = true;
+			hasItemThree = true;
 			for (var j: int = trickPlatforms.length - 1; j >= 0; j--) {
 
 				level.removeChild(trickPlatforms[j]);

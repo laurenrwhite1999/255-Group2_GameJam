@@ -34,7 +34,6 @@
 					collider.calcEdges(x, y);
 					idNum = 3;
 					gotoAndStop(3);
-
 					ScenePlay.isItemThreeSpawned = true;
 					ScenePlay.collectables.push(this);
 					itemSpawned = true;
@@ -45,7 +44,6 @@
 					collider.calcEdges(x, y);
 					idNum = 2;
 					gotoAndStop(2);
-
 					ScenePlay.isItemTwoSpawned = true;
 					ScenePlay.collectables.push(this);
 					itemSpawned = true;
@@ -56,13 +54,12 @@
 					collider.calcEdges(x, y);
 					idNum = 1;
 					gotoAndStop(1);
-
 					ScenePlay.isItemOneSpawned = true;
 					ScenePlay.collectables.push(this);
 					itemSpawned = true;
 				} // picks collectible 1 to be spawned
 
-				trace(spawnPicker);
+				
 			} // ends the while loop
 
 		} // ends the Collect() function

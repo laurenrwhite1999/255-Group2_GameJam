@@ -12,7 +12,7 @@
 		/** The gravity that is applied to the player as it falls. */
 		private var gravity: Point = new Point(0, 800);
 		/** The max speed that the player can move left or right. */
-		public var maxSpeed: Number = 200;
+		public var maxSpeed: Number = 350;
 		/** The velocity of the player. */
 		private var velocity: Point = new Point(1, 5);
 
@@ -24,7 +24,7 @@
 		/** Stores whether or not the player is currently on the ground. */
 		private var isPlayerOnGround: Boolean = false;
 		/** Whether or not the player is moving upward in a jump. This effects gravity. */
-		private var isJumping = false;
+		public var isJumping = false;
 
 		/** The number of jumps the player has left. */
 		private var airJumpsLeft: int = 1;
@@ -88,16 +88,19 @@
 		 * This function allows the player to jump based on how many air jumps they have left.
 		 */
 		private function handleJumping(): void {
+			var jumping:jumpSound = new jumpSound();
 			if (KeyboardInput.onKeyDown(Keyboard.SPACE)) { // jump was pressed
 				if (isPlayerOnGround) { // player is on the ground
 					velocity.y = -jumpVelocity; // apply an impulse up
 					isPlayerOnGround = false;
 					isJumping = true;
+					jumping.play();
 				} else { // player is in the air attempting a double jump
 					if (airJumpsLeft > 0) { // if we have air jumps left:
 						velocity.y = -jumpVelocity;
 						airJumpsLeft--;
 						isJumping = true;
+						jumping.play();
 					}
 				}
 			}

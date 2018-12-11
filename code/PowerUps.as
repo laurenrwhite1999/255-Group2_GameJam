@@ -43,15 +43,15 @@
 			 * Type 3.
 			 */
 			if (spawnPowerUp == 1) {
-				gotoAndStop(0);
+				gotoAndStop(1);
 				idNumber = 1;
 			} // end if
 			if (spawnPowerUp == 2) {
-				gotoAndStop(1);
+				gotoAndStop(2);
 				idNumber = 2;
 			} // end if
 			if (spawnPowerUp == 3) {
-				gotoAndStop(2);
+				gotoAndStop(3);
 				idNumber = 3;
 			} //end if
 			x = spawnX + 200; // moves the powerup in front of the player
@@ -113,16 +113,16 @@
 			} // end if
 			else if (powerUp2Active) {
 				//power up 2
-				player.maxSpeed = 500;
+				player.maxSpeed = 600;
 			} // end if
 			else if (powerUp3Active) {
 				//power up 3
 				//player.airJumpsMax=3;
-				player.maxSpeed = 500;
+				player.maxSpeed = 600;
 			} // end if
 			else {
 				player.airJumpsMax = 1;
-				player.maxSpeed = 200;
+				player.maxSpeed = 350;
 			} // end else
 		} // end isPowerUpActive
 
