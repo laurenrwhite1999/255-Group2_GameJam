@@ -140,12 +140,12 @@
 				myChannel.stop();
 				return new SceneLose(); // if the player falls off the stage return lose screen
 			}
-			/**
-			if (player.x > 550) {
+			
+			if (hasItemOne && hasItemTwo && hasItemThree) {
 				level.removeChild(player);
 				return new SceneWin(); // if player goes past this x position, they win!
 			}
-			*/
+			
 
 
 
