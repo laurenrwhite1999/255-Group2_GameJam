@@ -3,7 +3,9 @@
 	import flash.display.MovieClip;
 	import flash.geom.Point;
 
-
+		/**
+		 * This is PowerUps Class that holds all the power up info
+		 */
 	public class PowerUps extends MovieClip {
 		/** The gravity that is applied to the powerUps as they fall. */
 		private var gravity: Point = new Point(0, 800);

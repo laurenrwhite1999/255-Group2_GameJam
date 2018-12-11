@@ -5,6 +5,9 @@
 	 */
 	public class EnemyState {
 
+		/**
+		 * This function updates the enemy state.
+		 */
 		public function update(enemy: Enemy): EnemyState {
 			return null;
 		} // ends the update() function

@@ -1,6 +1,9 @@
 ﻿package code {
 	import flash.geom.Point;
 
+		/**
+		 * This class calculates AABB collision between 2  objects
+		 */
 	public class ColliderAABB {
 
 		/** Half of the object's width. */

@@ -58,9 +58,11 @@
 		public var hasItemThree: Boolean = false;
 		/** stores whether the player has powerUp or not **/
 		public var hasPowerUp: Boolean = false;
-
+		/** stores whether the player has powerUp or not **/
 		public var hasPowerUpOne: Boolean = false;
+		/** stores whether the player has powerUp or not **/
 		public var hasPowerUpTwo: Boolean = false;
+		/** stores whether the player has powerUp or not **/
 		public var hasPowerUpThree: Boolean = false;
 
 		/** this var sets up the players health */
@@ -140,12 +142,12 @@
 				myChannel.stop();
 				return new SceneLose(); // if the player falls off the stage return lose screen
 			}
-			
+
 			if (hasItemOne && hasItemTwo && hasItemThree) {
 				level.removeChild(player);
 				return new SceneWin(); // if player goes past this x position, they win!
 			}
-			
+
 
 
 
@@ -345,7 +347,7 @@
 						basicEnemies[k].isDead = true;
 						spawnEnemyParticle();
 						playerHealth -= 1;
-						var enDeath1:enemyDeath1 = new enemyDeath1();
+						var enDeath1: enemyDeath1 = new enemyDeath1();
 						enDeath1.play();
 					}
 				} // ends the for loop updating enemies
@@ -362,7 +364,7 @@
 						rangedEnemies[l].isDead = true;
 						spawnEnemyParticle();
 						playerHealth -= 1;
-						var enDeath2:enemyDeath2 = new enemyDeath2();
+						var enDeath2: enemyDeath2 = new enemyDeath2();
 						enDeath2.play();
 					}
 				} // ends the for loop updating the ranged enemies
@@ -471,8 +473,8 @@
 					flyingEnemies[r].isDead = true;
 					spawnEnemyParticle();
 					playerHealth -= 1;
-					var enDeath3:enemyDeath3 = new enemyDeath3();
-						enDeath3.play();
+					var enDeath3: enemyDeath3 = new enemyDeath3();
+					enDeath3.play();
 				}
 			} // ends the for loop updating the flying enemies
 
